@@ -17,3 +17,4 @@ fastapi>=0.115
 uvicorn[standard]>=0.30            # server that runs FastAPI
 pydantic-settings>=2.4             # loads .env into a typed config object
 
+streamlit>=1.40                    # Python-only web UI

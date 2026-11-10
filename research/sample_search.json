@@ -1,0 +1,72 @@
+[
+  {
+    "url": "https://rustify.rs/articles/rust-in-linux-kernel-2026",
+    "title": "Rust in the Linux Kernel: What It Means in 2026 | Rustify",
+    "snippet": "> TL;DR: Rust was accepted into the Linux kernel in October 2022 (kernel 6.1). By 2026, Rust kernel code is shipping in production: Android's Binder IPC driver has a Rust implementation, Apple's GPU driver (asahi-gpu) is Rust, and multiple filesystem and network subsystems have Rust contributions. This is the biggest architectural change in the Linux kernel in decades.\n>\n>  Kernel 6.1 (Dec 2022): First Rust infrastructure merged : `rust/` directory, Rust build system [...] Yes, on kernels 6.1+ w"
+  },
+  {
+    "url": "https://www.linuxjournal.com/content/how-rusts-debut-linux-kernel-shoring-system-stability",
+    "title": "How Rust\u2019s Debut in the Linux Kernel is Shoring Up System Stability | Linux Journal",
+    "snippet": "Combined, these attributes strip away entire categories of vulnerabilities that plague C-based code.\n\n## A New Layer: The Rust-for-Linux Framework\n\nThe groundwork for Rust modules in Linux was laid with kernel 6.1, and by version 6.8, the first experimental Rust drivers, covering areas like network PHYs and panic QR logging, were accepted. These drivers coexist with traditional C components, forming a hybrid architecture where Rust is used for new drivers while C remains the backbone. [...] Memo"
+  },
+  {
+    "url": "https://en.wikipedia.org/wiki/Rust_for_Linux",
+    "title": "Rust for Linux - Wikipedia",
+    "snippet": "Rust for Linux is an ongoing project started in 2020 to add Rust \"Rust (programming language)\") as a programming language that can be used within the Linux kernel software, which has been written using C \"C (programming language)\") and assembly only. This project aims to leverage Rust's memory safety to reduce bugs when writing kernel drivers. Progress has been slower than hoped by both Rust advocates and Linus Torvalds, lead of the Linux kernel project. In December 2023, the first drivers [...]"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=enUkMK5JQY8",
+    "title": "Why Rust is coming to the Linux kernel",
+    "snippet": "[1:05] have to can be really tiny because they take resources from the rest of the kernel. In Rust, you need to have a binding between the C code and the Rust\n[1:13] code. There's an intermediate layer. The C the kernel in C has these very opinionated model ideas of how it handles objects and how it does memory\n[1:21] and how it it has its memory model. Rust has its very opinionated model of how it does this type same idea. This meshing is tough. [...] [4:04] up code in the driver core. It's lik"
+  },
+  {
+    "url": "https://felipec.wordpress.com/2025/02/13/rust-not-for-linux",
+    "title": "Rust doesn\u2019t belong in the Linux kernel; it\u2019s all about ideology | Felipe Contreras",
+    "snippet": "I know that Rust has a LinkedList structure in `std::collections`, but would that be available in the kernel? In linux there isn\u2019t a C runtime, so there isn\u2019t even `malloc()` available. I have written RISC-V bare metal C programs and my own kernel for x86 in pure assembly language, so I have some rough idea what a kernel would need. But even if the standard LinkedList was available, it likely wouldn\u2019t perform as well as linux\u2019s linked list implementation in C, and a driver would likely want to ["
+  },
+  {
+    "url": "https://thenewstack.io/rust-integration-in-linux-kernel-faces-challenges-but-shows-progress",
+    "title": "Rust Integration in Linux Kernel Faces Challenges but Shows Progress - The New Stack",
+    "snippet": "For example, the Linux 6.13 kernel, released in January 2025, brought significant expansions to Rust support. This kernel introduced in-place modules, bindings, and trace events for Rust developers. What that means, explained Greg Kroah-Hartman, the Linux stable release maintainer, is that Rust support is at \u201cthe tipping point; expect to see way more rust drivers going forward now that these bindings are present. [...] Next merge window, hopefully, we will have PCI and platform drivers working, "
+  },
+  {
+    "url": "https://www.mindstudio.ai/blog/rust-in-linux-kernel-progress",
+    "title": "Rust in the Linux Kernel: How Far Has Adoption Actually Gone? | MindStudio",
+    "snippet": "Outside the mainline tree, related work is progressing too. There\u2019s ongoing NVMe driver work in Rust, and Asahi Linux has been upstreaming pieces of scaffolding for a Rust-based GPU driver, though the driver itself remains in progress.\n\n## Is platform support a real barrier for kernel Rust? [...] No Rust code currently exists in the kernel\u2019s core critical paths, and that\u2019s likely to remain true for a while. Touching core kernel internals with Rust risks breaking platforms that lack full Rust too"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=8IfPxGkZRZU&vl=en",
+    "title": "The Future of Rust in the Linux Kernel",
+    "snippet": "[0:24] definitely advocated recently for the rest contributions. So, we're going to be checking out a bold new prediction in the technical progress of the driver\n[0:32] development as Rustbased drivers are becoming more prevalent in the kernel, and we'll get to that after talking about some wins for Rust in the recent\n[0:40] weeks. First off, a loss. Sven here from Acai Linux has posted, \"Looks like the M4 support for Acai Linux is going to be [...] [7:42] is a tipping point. Expect to see way m"
+  },
+  {
+    "url": "https://www.reddit.com/r/rust/comments/16x21gw/linux_kernel_driver_development_in_rust_examples",
+    "title": "https://www.reddit.com/r/rust/comments/16x21gw/linux_kernel_driver_development_in_rust_examples/",
+    "snippet": "Open menu Open navigation went out of business, resulting in no further driver development. There is work on a Linux driver (see github tn40xx) and it has not been upstreamed to Linux kernel yet. I have come across multiple such user-run initiatives to support legacy hardware (or in this case: not legacy, but vendor going out of business). [...] Since there was a lot of media attention about Rust for Linux recently, I wanted to ask a few questions in regards to driver development, and understand"
+  },
+  {
+    "url": "https://thenewstack.io/rust-goes-mainstream-in-the-linux-kernel",
+    "title": "Rust Goes Mainstream in the Linux Kernel - The New Stack",
+    "snippet": "Mind you, they have reasons. In a dispute over how to get Rust to work with the Linux kernel\u2019s Direct Memory Access (DMA) Application Programming Interface (API), the real problem boiled down to, as senior Linux kernel developer Ted T\u2019so observed, maintainers don\u2019t have unlimited time, and they don\u2019t want to increase their \u201ccode maintenance burden.\u201d [...] Photo by Jay Heike on Unsplash.\n\nTOKYO \u2014  At the invitation-only Linux Kernel Maintainers Summit here, the top Linux maintainers decided, as J"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=opTJH76wJxs",
+    "title": "The Rust vs C Linux Divide.. Another Rust Maintainer Steps Down.",
+    "snippet": "[21:29] the patch maintainers remove myself and these recent discussions within the Linux kernel Community have definitely highlighted significant tensions\n[21:37] regarding rust and even introducing other code into the Linux kernel and adopting it it's definitely notable as this proposed patch caught in the dma or\n[21:45] direct memory access faced a lot of opposition mainly from the maintainer Kristoff who was concerned about the multilanguage code base and followed [...] [21:04] email list as"
+  },
+  {
+    "url": "https://linux.slashdot.org/story/25/02/22/0524210/torvalds-rust-kernel-code-isnt-forced-in-over-maintainers-objections",
+    "title": "Torvalds: Rust Kernel Code Isn't Forced In Over Maintainers' Objections - Slashdot",
+    "snippet": "I don't think it matters nearly as much as you might think. No one can maintain the entire kernel, as it's too big for one person to hold in memory. There are already subsystems using other languages (the kernel config, for example, at least used to be written in a non-C language). There are maintainers and maintainers for the maintainers. As Linus stated, there are walls between the Rust portions and the C portions of the kernel, and never shall the two be forced to meet. [...] Rust code is not"
+  },
+  {
+    "url": "https://lwn.net/Articles/1049831",
+    "title": "The (successful) end of the kernel Rust experiment [LWN.net]",
+    "snippet": "The topic of the Rust experiment was just discussed at the annual Maintainers Summit. The consensus among the assembled developers is that Rust in the kernel is no longer experimental \u2014 it is now a core part of the kernel and is here to stay. So the \"experimental\" tag will be coming off. Congratulations are in order for all of the Rust for Linux team.\n\n(Stay tuned for details in our Maintainers Summit coverage.)"
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=-XLuGB0wZ1M",
+    "title": "Why Rust Is Causing Tension in the Linux Kernel.",
+    "snippet": "[7:08] or wrong, [music] but because it highlights something deeper. The larger more corporate integrated a project becomes and FreeBSD is on its way to\n[7:17] that. Think Netflix, Sony and others, the more governance becomes political.\n[7:23] So Rust is not the problem. Rust is the catalyst. The debate is really about authority, sustainability,\n[7:32] long-term maintainership, and who carries that responsibility when things go wrong. That's an operating system question, not a language [music] ["
+  }
+]
