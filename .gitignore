@@ -1,0 +1,4 @@
+.env
+.venv/*
+agentic_development.code-workspace
+.vscode/*

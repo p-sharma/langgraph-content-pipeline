@@ -1,0 +1,6 @@
+-r requirements.txt
+pytest>=8
+ruff>=0.6
+
+ipykernel>=6.29      # lets VS Code run notebooks with your .venv
+python-dotenv>=1.0   # loads your .env keys inside the notebook
