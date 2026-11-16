@@ -47,4 +47,10 @@ class State(TypedDict):
     # Human approval
     human_feedback: str | None
     status: Status
-    
+
+
+class ResearchTask(TypedDict):
+    """Input for ONE research worker: just what it needs, not the whole State."""
+    topic: str
+    guidance: str | None
+    source: RankedSource

@@ -6,6 +6,6 @@ from langchain.chat_models import init_chat_model
 def get_llm():
     """Create the chant model once and reuse it everywhere."""
     model = os.getenv("LLM_MODEL","anthropic:claude-sonnet-5-5")
-    return init_chat_model(model=model)
+    return init_chat_model(model=model,max_tokens=4096)
 
 

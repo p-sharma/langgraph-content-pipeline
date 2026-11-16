@@ -1,99 +1,141 @@
 {
-  "topic": "Rust in the Linux kernel",
+  "topic": "EU AI Act fines for general-purpose models",
   "topic_source": "user",
   "guidance": null,
   "search_queries": [
-    "Rust in the Linux kernel",
-    "Rust in the Linux kernel overview",
-    "Rust for Linux recent developments 2025",
-    "Rust Linux kernel maintainers debate criticism",
-    "Rust Linux kernel drivers statistics adoption"
+    "EU AI Act fines for general-purpose models",
+    "EU AI Act fines general-purpose AI models",
+    "EU AI Act GPAI penalties enforcement timeline",
+    "AI Office fines general-purpose AI providers debate",
+    "EU AI Act GPAI fine amounts percent turnover"
   ],
   "search_results": [
     {
-      "url": "https://en.wikipedia.org/wiki/Rust_for_Linux",
-      "title": "Rust for Linux - Wikipedia",
-      "snippet": "Rust for Linux is an ongoing project started in 2020 to add Rust \"Rust (programming language)\") as a programming language that can be used within the Linux kernel software, which has been written using C \"C (programming language)\") and assembly only. This project aims to leverage Rust's memory safety to reduce bugs when writing kernel drivers. Progress has been slower than hoped by both Rust advocates and Linus Torvalds, lead of the Linux kernel project. In December 2023, the first drivers [...]"
+      "url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-101",
+      "title": "Article 101: Fines for providers of general-purpose AI models | AI Act Service Desk",
+      "snippet": "Summary \n\nThe Commission can fine providers of general-purpose AI models up to 3% of their global annual turnover or EUR 15 million, whichever is higher, if they intentionally or negligently infringe the rules of the AI Act, do not properly provide requested information or documents, or fail to comply with other requests.\n\nThe summaries are meant to provide helpful explanation but are not legal binding. [...] 1.   The Commission may impose on providers of general-purpose AI models fines not exce"
     },
     {
-      "url": "https://www.spiceworks.com/software/rust-moves-from-experiment-to-a-core-linux-kernel-language",
-      "title": "The Linux Kernel posture shift: Practical realities of the rust transition - Spiceworks",
-      "snippet": "Rust is no longer tagged as experimental in the kernel after a decision at the 2025 Linux Kernel Maintainer Summit. As Jonathan Corbet, Linux kernel developer, put it, \u201cThe consensus among the assembled developers is that Rust in the kernel is no longer experimentalOpens a new window  \u2014 it is now a core part of the kernel and is here to stay. So the \u2018experimental\u2019 tag will be coming off.\u201d  As Rust-for-LinuxOpens a new window  lead Miguel Ojedam said, Rust is \u201chere to stay\u201d. This elevates Rust [."
+      "url": "https://trussed.ai/resources/eu-ai-act-penalties-fine-tiers-explained",
+      "title": "EU AI Act Penalties: Fine Tiers Explained",
+      "snippet": "Direct answer. The EU AI Act establishes three penalty tiers under Article 99: up to \u20ac35 million or 7% of global annual turnover for prohibited AI practices; up to \u20ac15 million or 3% for violations of high-risk system and other compliance obligations; and up to \u20ac7.5 million or 1% for supplying incorrect or misleading information to authorities. A separate tier under Article 101 applies to general-purpose AI model providers, enforced directly by the European Commission\u2019s AI Office. In each case, ["
     },
     {
-      "url": "https://thenewstack.io/rust-goes-mainstream-in-the-linux-kernel",
-      "title": "Rust Goes Mainstream in the Linux Kernel - The New Stack",
-      "snippet": "Photo by Jay Heike on Unsplash.\n\nTOKYO \u2014  At the invitation-only Linux Kernel Maintainers Summit here, the top Linux maintainers decided, as Jonathan Corbet, Linux kernel developer, put it, \u201cThe consensus among the assembled developers is that Rust in the kernel is no longer experimental \u2014 it is now a core part of the kernel and is here to stay. So the \u2018experimental\u2019 tag will be coming off.\u201d As Linux kernel maintainer Steven Rosted told me, \u201cThere was zero pushback.\u201d [...] In the subsequent 2020"
+      "url": "https://vdf.ai/blog/eu-ai-act-fines-penalties",
+      "title": "EU AI Act Fines: Penalty Tiers, SME Caps and Examples",
+      "snippet": "The Commission, for model providers. Fines on providers of general-purpose AI models follow Article 101, covered next.\n\n## Fines on general-purpose AI model providers\n\nArticle 101 gives the Commission its own power over providers of general-purpose AI models. It can fine a provider up to 3% of annual total worldwide turnover in the preceding financial year or \u20ac15 million, whichever is higher, where the provider intentionally or negligently: [...] Yes, for obligations that already apply, under th"
     },
     {
-      "url": "https://felipec.wordpress.com/2025/02/13/rust-not-for-linux",
-      "title": "Rust doesn\u2019t belong in the Linux kernel; it\u2019s all about ideology | Felipe Contreras",
-      "snippet": "/ FelipeC\n\nRust in the Linux kernel has been a source of drama for quite some time now, and while I somewhat sympathize with both sides (pro-Rust and anti-Rust), I believe the fundamental problem is that both sides don\u2019t really understand each other (although one side more than the other), and it\u2019s not just the technical issue of how to better write a kernel: it\u2019s much more that the entire worldview is different. [...] > > At last year\u2019s LPC I held a talk ( about Rust in the kernel and there was"
+      "url": "https://artificialintelligenceact.eu/article/101",
+      "title": "Article 101: Fines for Providers of General-Purpose AI Models | EU Artificial Intelligence Act",
+      "snippet": "1. The Commission may impose on providers of general-purpose AI models fines not exceeding 3 % of their annual total worldwide turnover in the preceding financial year or EUR 15 000 000, whichever is higher., when the Commission finds that the providerprovidermeans a natural or legal person, public authority, agency or other body that develops an AI system or a general-purpose AI model or that has an AI system or a general-purpose AI model developed and places it on the market or puts the AI [.."
     },
     {
-      "url": "https://rust-for-linux.com",
-      "title": "Rust for Linux",
-      "snippet": "# Rust for Linux\n\n# Rust for Linux\n\nRust for Linux is the project adding support for the Rust language to the Linux kernel.\n\nThis website is intended as a hub of links, documentation and resources related to the project.\n\n## The project\n\n Contact\n Contributing\n Rust kernel policy\n Branches\n Rust reference drivers\n Rust version policy\n Unstable features\n Backporting and stable/LTS releases\n Third-party crates\n Out-of-tree modules\n Industry and academia support\n Sponsors\n\n### Subprojects"
+      "url": "https://www.artificial-intelligence-act.com/Artificial_Intelligence_Act_Article_101.html",
+      "title": "Article 101, Fines for providers of general-purpose AI models, EU AI Act",
+      "snippet": "# The EU AI Act | Article 101\n\n  \n   \n\nArticle 101, Fines for providers of general-purpose AI models.\n\n  \n\n1. The Commission may impose on providers of general-purpose AI models fines not exceeding 3 % of their annual total worldwide turnover in the preceding financial year or EUR 15 000 000, whichever is higher., when the Commission finds that the provider intentionally or negligently:\n\n(a) infringed the relevant provisions of this Regulation; [...] (b) failed to comply with a request for a doc"
     },
     {
-      "url": "https://www.linuxjournal.com/content/how-rusts-debut-linux-kernel-shoring-system-stability",
-      "title": "How Rust\u2019s Debut in the Linux Kernel is Shoring Up System Stability | Linux Journal",
-      "snippet": "Combined, these attributes strip away entire categories of vulnerabilities that plague C-based code.\n\n## A New Layer: The Rust-for-Linux Framework\n\nThe groundwork for Rust modules in Linux was laid with kernel 6.1, and by version 6.8, the first experimental Rust drivers, covering areas like network PHYs and panic QR logging, were accepted. These drivers coexist with traditional C components, forming a hybrid architecture where Rust is used for new drivers while C remains the backbone. [...] Stil"
+      "url": "https://compyl.com/blog/eu-ai-act-penalties",
+      "title": "EU AI Act Penalties and Fines Explained | Compyl",
+      "snippet": "From August 2, 2026 the European Commission can fine providers of general purpose AI models up to 15,000,000 EUR or 3 percent under Article 101.\n The Digital Omnibus on AI, Regulation (EU) 2026/1744, deferred several high-risk deadlines but left the fine amounts in Article 99 untouched.\n Fines are issued by national market surveillance authorities, except for EU institutions (the EDPS, under Article 100) and general purpose AI models (the Commission). [...] | General purpose AI models | Intentio"
     },
     {
-      "url": "https://www.youtube.com/watch?v=HX0GH-YJbGw",
-      "title": "Keynote: Rust in the Linux Kernel, Why? - Greg Kroah-Hartman",
-      "snippet": "[10:10] Um, phones, phones are like four and a half to five million lines of code of the kernel. Phones are the most SOC's\n[10:17] are most complex beasts out there. And we have 65,000 lines of code in Rust in the kernel today. We have bindings which\n[10:24] is the intersection between the C code and the rest code in the kernel for platform drivers, PCI drivers, MIS [...] [9:47] Memory safety doesn't mean there's never any memory errors. Just means you're going to crash and that's fine. Rust is "
+      "url": "https://intelligence.dlapiper.com/artificial-intelligence?t=08-enforcement&c=EU",
+      "title": "Enforcement / fines in the European Union - AI Laws of the World",
+      "snippet": "Article 51 of the EU AI Act classifies a GPAI model as having systemic risk if it has high-impact capabilities (this is presumed when the cumulative amount of computation used for training exceeds 10^25 floating point operations (FLOPs), though the Commission may also designate models based on other indicators and benchmarks) or based on a decision of the Commission. [...] Importantly, the requirements of a GPAI model/system (i.e., without a specific use case) and the requirement of an AI system"
     },
     {
-      "url": "https://news.ycombinator.com/item?id=44400697",
-      "title": "Rust in the Linux kernel: part 2 | Hacker News",
-      "snippet": "will look at the design of the interface between the C and Rust code in the kernel, as well as the process of adding new bindings when necessary. This is the actual useful one since so little of the kernel has Rust bindings. When I tried to implement a filesystem driver in rust I spent most of my time trying to write bindings instead of trying to write a filesystem. | | | |  |  |  |  ---  |  |  | leoh on June 29, 2025  | parent | next (javascript:void(0))   Did you try bindgen? Because it\u2019s [..."
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+      "title": "AI Act | Shaping Europe\u2019s digital future",
+      "snippet": "Find out more about other guidelines supporting the implementation of the AI Act.\n\n## Governance and enforcement\n\nFrom 2 August 2026, the\u202fAI Office and authorities of the Member States are responsible for implementing, supervising and enforcing the AI Act. The AI Office holds enforcement powers over GPAI models. It can request technical documentation, evaluate models, require corrective measures and issue fines for non-compliance."
     },
     {
-      "url": "https://blog.rust-lang.org",
-      "title": "The Rust Programming Language Blog",
-      "snippet": "| Posts in 2025 |\n| Dec. 19 | What do people love about Rust? |\n| Dec. 16 | Project goals update \u2014 November 2025 |\n| Dec. 11 | Announcing Rust 1.92.0 |\n| Dec. 8 | Making it easier to sponsor Rust contributors |\n| Dec. 5 | crates.io: Malicious crates finch-rust and sha-rust |\n| Dec. 5 | Updating Rust's Linux musl targets to 1.2.5 |\n| Dec. 3 | Lessons learned from the Rust Vision Doc process |\n| Dec. 3 | crates.io: Malicious crates evm-units and uniswap-utils | [...] | Aug. 7 | Announcing Rust 1.8"
+      "url": "https://www.euaiact.com/key-issue/1",
+      "title": "EU AI Act Key Issue 1: Fines/Penalties",
+      "snippet": "Independent EU AI Act information resourceLegal text verified against EUR-Lex\n\nEU AI Act\nMenu\nCheck readiness\n\nKey issue 1\u00b7 Enforcement\n\n# Fines/Penalties\n\nArticles 99\u2013101 establish the EU AI Act's penalty framework for operators, EU institutions and providers of general-purpose AI models.\n\n!\n\nOriginal commentary: archive [...] Table 2: The structure of fines under the previous version by the Council of the EU\n\n## Governing provisions\n\n Article 99Penalties\n Article 100EU institutions and bodies\n"
     },
     {
-      "url": "https://www.devclass.com/development/2025/12/15/rust-boosted-by-permanent-adoption-for-linux-kernel-code/1725322",
-      "title": "Rust boosted by permanent adoption for Linux kernel code",
-      "snippet": "In the 2024 State of Rust survey, the top developer concern for the future was \u201cnot enough usage in the tech industry.\u201d 2025 has been a good year for Rust and those concerns now look less pressing.\n\ndevelopment\n\nDEVCLASS AD\n\n## Python 3.15 goes global with UTF-8 support\n\nOctober 15, 2026\n\n## When you just need to build a tiny desktop app: TinyJS\n\nOctober 13, 2026\n\n## Valen creator drives 'Golden Spike' to connect new languages with Rust\n\nSeptember 26, 2026 [...] Jump to main content\n\nGo to front"
+      "url": "https://compliancestack.ai/penalties/eu-ai-act/enforcement-timeline",
+      "title": "EU AI Act Enforcement Timeline: 2025 to 2027",
+      "snippet": "2025 accumulate a 12+ month violation history before the main enforcement gate opens; (2) GPAI violations running from August 2025 accumulate 12 months before the August 2026 enforcement date; and (3) NCAs can impose penalties for pre-August 2026 violations in their investigation conclusions even if proceedings formally begin after August 2026. The practical implication: companies that have been operating prohibited or non-compliant AI systems since early 2025, and who assume they have a 'grace "
     },
     {
-      "url": "https://lpc.events/event/20/contributions/2371/attachments/2229/4895/2026-10-06%20-%20LPC%202026%20-%20Rust%20for%20Linux.pdf",
-      "title": "LPC 2026 - Rust for Linux",
-      "snippet": "\u2014  \u2014 Greg KH at KubeCon + CloudNativeCon Europe 2025 Rust for Linux in perspective ~4,400 patch series (up from ~2,500 last year).\n~500 submitters (up from ~300 last year).\nPlus ~700 PRs early on in GitHub.\nPlus the work in other projects, e.g. upstream Rust.\n~170 PRs to Linus Torvalds (up from ~100 last year).\n~32 Rust-related entries in MAINTAINERS (up from ~20 last year).\n~40 maintainers/reviewers (up from ~30 last year).\n~11 active core team members (up from ~7 last year). [...] \u2014  Toolchain"
+      "url": "https://www.orbiqhq.com/eu-regulations/eu-ai-act-compliance",
+      "title": "EU AI Act Compliance: Complete Guide for 2026 (Regulation...",
+      "snippet": "Three critical dates: (1) 2 February 2025 \u2014 prohibited AI practices (Chapter II, Article 5) became enforceable; (2) 2 August 2025 \u2014 GPAI model obligations (Chapter V) applied and the penalty regime became effective; (3) 2 August 2026 \u2014 high-risk AI system requirements (Annex III) must be met. High-risk systems already in service before 2 August 2026 have until 2 August 2027 to comply.\n\nWhat are the penalties under the EU AI Act? [...] | Violation | Maximum fine |\n --- |\n| Prohibited AI practices"
     },
     {
-      "url": "https://medium.com/@noahbean3396/the-pragmatic-future-of-the-linux-kernel-balancing-rust-and-c-e518117328b7",
-      "title": "The Pragmatic Future of the Linux Kernel: Balancing Rust and C",
-      "snippet": "Why it works: It moves the debate from abstract code to human sociology.  \n  The Reality: You correctly identify that the blockage isn\u2019t just technical; it\u2019s \u201cCultural Inertia.\u201d Kernel maintainers have 30 years of muscle memory in C. Asking them to review Rust code is like asking a French poet to edit a German novel \u2014 they hate it because they feel illiterate.  \n2. The \u201cRefactoring\u201d Argument (The Mika Cohen Point)  \nYou were smart to integrate the comment about Refactoring."
+      "url": "https://artificialintelligenceact.eu/enforcement-of-chapter-v-under-the-eu-ai-act",
+      "title": "Enforcement of Chapter V under the EU AI Act | EU Artificial Intelligence Act",
+      "snippet": "Under the AI Act, GPAI model providers have both obligations that can be described as procedural (concerning the interaction with the AI Office, among others) and substantive (concerning the development and documentation relating to the model).\n While they have been subject to these obligations since 2 August 2025, the Commission\u2019s supervision and enforcement powers against GPAI model providers will only come into force on 2 August 2026 (see here for a complete implementation timeline). [...] ##"
     },
     {
-      "url": "https://www.youtube.com/watch?v=opTJH76wJxs",
-      "title": "The Rust vs C Linux Divide.. Another Rust Maintainer Steps Down.",
-      "snippet": "[21:29] the patch maintainers remove myself and these recent discussions within the Linux kernel Community have definitely highlighted significant tensions\n[21:37] regarding rust and even introducing other code into the Linux kernel and adopting it it's definitely notable as this proposed patch caught in the dma or\n[21:45] direct memory access faced a lot of opposition mainly from the maintainer Kristoff who was concerned about the multilanguage code base and followed [...] ### Transcript\n[0:00]"
+      "url": "https://cranium.ai/navigating-the-eu-ai-act-august-2025-deadline-gpai-compliance-penalties-and-enforcement",
+      "title": "Navigating the EU AI Act August 2025 Deadline: GPAI Compliance, Penalties, and Enforcement \u2013 Cranium AI",
+      "snippet": "The August 2025 EU AI Act deadline introduces new compliance requirements for General-Purpose AI (GPAI) providers \u2014 including technical documentation, transparency reporting, and systemic risk assessments. Failing to comply can result in fines up to \u20ac35 million or 7% of global turnover. Here\u2019s what you need to know and how to prepare.\n\n## What Are the August 2025 EU AI Act Deadlines? [...] The EU AI Act's August 2025 deadline introduces binding obligations for General-Purpose AI providers, inclu"
     },
     {
-      "url": "https://linux.slashdot.org/story/25/02/22/0524210/torvalds-rust-kernel-code-isnt-forced-in-over-maintainers-objections",
-      "title": "Torvalds: Rust Kernel Code Isn't Forced In Over Maintainers' Objections - Slashdot",
-      "snippet": "I don't think it matters nearly as much as you might think. No one can maintain the entire kernel, as it's too big for one person to hold in memory. There are already subsystems using other languages (the kernel config, for example, at least used to be written in a non-C language). There are maintainers and maintainers for the maintainers. As Linus stated, there are walls between the Rust portions and the C portions of the kernel, and never shall the two be forced to meet. [...] I am just a byst"
+      "url": "https://policyreview.info/articles/analysis/general-purpose-ai-regulation-and-ai-act",
+      "title": "General-purpose AI regulation and the European Union AI Act | Internet Policy Review",
+      "snippet": "it comes to models categorised as systemic risk. In cases where the providers of those models infringe provisions of the AIA, supply incorrect, incomplete, or misleading information, or fail to cooperate with the AI Office and the Commission during an evaluation of the model potentially resulting in corrective measures or limiting market access, the Commission may, after a hearing, impose fines not exceeding 3% of annual total worldwide turnover in the preceding financial year, or a fine of 15 ["
     },
     {
-      "url": "https://www.mindstudio.ai/blog/rust-in-linux-kernel-progress",
-      "title": "Rust in the Linux Kernel: How Far Has Adoption Actually Gone? | MindStudio",
-      "snippet": "Rust support was proposed in 2021 and merged in minimal form in 2022, starting as a bare framework rather than a wholesale rewrite of anything.\n Adoption is uneven across subsystems: DRM/GPU leads with the most Rust code of any area, while other subsystems have Rust abstractions merged but nothing yet using them.\n Real Rust drivers already ship, including networking drivers for the AX88772A and a generic Realtek chipset, plus PWM abstractions and Android components like Binder. [...] ## Frequent"
+      "url": "https://www.quinnemanuel.com/the-firm/publications/client-alert-eu-ai-act-obligations-on-general-purpose-ai-model-providers",
+      "title": "Client Alert: EU AI Act: Obligations on General-Purpose AI Model Providers",
+      "snippet": "Against the backdrop of the EU\u2019s broader digital competitiveness agenda, including the Digital Omnibus on AI proposal published on 19 November 2025, enforcement authorities \u2014 notably the AI Office, which stands to gain expanded powers \u2014 are unlikely to adopt an overly rigid posture in these initial stages. Instead, they are expected to favour a more collaborative approach with GPAI model providers, seeking to balance innovation, competitiveness, and systemic risk mitigation. Notwithstanding, [.."
     },
     {
-      "url": "https://www.usenix.org/publications/loginonline/empirical-study-rust-linux-success-dissatisfaction-and-compromise",
-      "title": "An Empirical Study of Rust-for-Linux: The Success, Dissatisfaction, and Compromise | USENIX",
-      "snippet": "3. For storage devices (NVME and NULL block), Rust drivers lead to overall similar performance with C, with up to 61% degradation and 67% improvement in throughput, depending on the specific settings (e.g., job number and batch sizes) as shown in Figure 6 and Figure 7. We observe that Rust drivers favor smaller job numbers and blocksize, possibly because Rust often has smaller structs (reasons explained later) which are more likely to fit in the cache line. [...] We have observed a clear long ta"
+      "url": "https://www.facebook.com/eudebates.tv/videos/eu-ai-office-gains-new-powers-to-enforce-ai-act-rules-on-gpai-models-an-eu-spoke/2467923963619892",
+      "title": "2.5K views \u00b7 33 reactions | EU AI Office Gains New Powers to Enforce AI Act Rules on GPAI Models! \nAn EU spokesperson said the AI Office has gained important new powers under the AI Act as of 2 August.\nThe AI Office, which enforces obligations for general-purpose AI model providers, can now request information, access models for evaluation and require risk mitigation measures.\nThe EU also said new transparency requirements have started to apply, helping people recognise when they are interacting with AI or viewing AI-generated or AI-altered content.\nAccording to the Commission, these rules are designed to reduce the risk of deception and build trust in AI across the European Union.\nThe spokesperson added that more than 180 organisations have signed the Code of Practice helping put these rules into effect.\n#AIAct #AIOffice #ArtificialIntelligence #GPAI | EU debates - eudebates.tv",
+      "snippet": "EU AI Office Gains New Powers to Enforce AI Act Rules on GPAI Models! An EU spokesperson said the AI Office has gained important new powers under the AI Act as of 2 August. The AI Office, which enforces obligations for general-purpose AI model providers, can now request information, access models for evaluation and require risk mitigation measures. The EU also said new transparency requirements have started to apply, helping people recognise when they are interacting with AI or viewing [...] wit"
     },
     {
-      "url": "https://www.youtube.com/watch?v=8IfPxGkZRZU&vl=en",
-      "title": "The Future of Rust in the Linux Kernel",
-      "snippet": "[8:28] Miguel for tirelessly working on the effort and thank the Alpha Omega project for their financial support. This is an important prediction because there are\n[8:36] claims that this is a turning point for the security and sustainability of the Linux kernel development mentioning how real world adoption is getting nearer\n[8:43] and nearer with several Rust drivers for things like the Apple GPUs, MVME drives, Android are getting close to being merged into the mainline Linux kernel. [...] [7:"
+      "url": "https://www.youtube.com/watch?v=1fqnSjV5GUE",
+      "title": "What is EU AI Act GPAI Enforcement?",
+      "snippet": "Today we look at the EU AI Act's enforcement powers over providers of general-purpose AI models. From August 2 2026, the European Commission can impose fines of up to 3% of global annual turnover or 15 million euros, whichever is higher. The GPAI obligations in Articles 53 and 55 have been legally in force since August 2 2025, but the enforcement machinery arrives in 2026. In the next few minutes, we cover what changes, the obligations, the deadlines, and what providers should do. [...] [1:08] i"
+    },
+    {
+      "url": "https://www.euaiact.com/blog/eu-ai-act-penalties-enforcement",
+      "title": "EU AI Act Penalties: The Three Fine Tiers",
+      "snippet": "| Population | Enforcer | Provision | Ceiling |\n| Union institutions, bodies, offices and agencies | European Data Protection Supervisor | Article 100 | \u20ac1.5m for a prohibited practice, \u20ac750,000 otherwise |\n| Providers of general-purpose AI models | European Commission | Article 101 | Up to 3% of worldwide annual turnover or \u20ac15m, whichever is higher | [...] ## Frequently asked questions\n\nWhat is the maximum fine under the EU AI Act?\n:   \u20ac35 million or 7% of total worldwide annual turnover for t"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-101",
+      "title": "Article 101: Fines for providers of general-purpose AI models | AI Act Service Desk",
+      "snippet": "Summary \n\nThe Commission can fine providers of general-purpose AI models up to 3% of their global annual turnover or EUR 15 million, whichever is higher, if they intentionally or negligently infringe the rules of the AI Act, do not properly provide requested information or documents, or fail to comply with other requests.\n\nThe summaries are meant to provide helpful explanation but are not legal binding. [...] 1.   The Commission may impose on providers of general-purpose AI models fines not exce",
+      "score": 9.35,
+      "rank_reason": "Official EU AI Service Desk page directly stating the Article 101 GPAI fine ceiling and triggers."
+    },
+    {
+      "url": "https://artificialintelligenceact.eu/article/101",
+      "title": "Article 101: Fines for Providers of General-Purpose AI Models | EU Artificial Intelligence Act",
+      "snippet": "1. The Commission may impose on providers of general-purpose AI models fines not exceeding 3 % of their annual total worldwide turnover in the preceding financial year or EUR 15 000 000, whichever is higher., when the Commission finds that the providerprovidermeans a natural or legal person, public authority, agency or other body that develops an AI system or a general-purpose AI model or that has an AI system or a general-purpose AI model developed and places it on the market or puts the AI [..",
+      "score": 8.7,
+      "rank_reason": "Full text of Article 101 from a well-known AI Act reference site, directly on topic."
+    },
+    {
+      "url": "https://www.artificial-intelligence-act.com/Artificial_Intelligence_Act_Article_101.html",
+      "title": "Article 101, Fines for providers of general-purpose AI models, EU AI Act",
+      "snippet": "# The EU AI Act | Article 101\n\n  \n   \n\nArticle 101, Fines for providers of general-purpose AI models.\n\n  \n\n1. The Commission may impose on providers of general-purpose AI models fines not exceeding 3 % of their annual total worldwide turnover in the preceding financial year or EUR 15 000 000, whichever is higher., when the Commission finds that the provider intentionally or negligently:\n\n(a) infringed the relevant provisions of this Regulation; [...] (b) failed to comply with a request for a doc",
+      "score": 8.7,
+      "rank_reason": "Full text of Article 101 on a widely cited AI Act site, directly on topic."
+    },
+    {
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+      "title": "AI Act | Shaping Europe\u2019s digital future",
+      "snippet": "Find out more about other guidelines supporting the implementation of the AI Act.\n\n## Governance and enforcement\n\nFrom 2 August 2026, the\u202fAI Office and authorities of the Member States are responsible for implementing, supervising and enforcing the AI Act. The AI Office holds enforcement powers over GPAI models. It can request technical documentation, evaluate models, require corrective measures and issue fines for non-compliance.",
+      "score": 8.35,
+      "rank_reason": "Official Commission page on AI Act governance and enforcement from 2 August 2026, relevant context on the AI Office's powers."
+    },
+    {
+      "url": "https://compyl.com/blog/eu-ai-act-penalties",
+      "title": "EU AI Act Penalties and Fines Explained | Compyl",
+      "snippet": "From August 2, 2026 the European Commission can fine providers of general purpose AI models up to 15,000,000 EUR or 3 percent under Article 101.\n The Digital Omnibus on AI, Regulation (EU) 2026/1744, deferred several high-risk deadlines but left the fine amounts in Article 99 untouched.\n Fines are issued by national market surveillance authorities, except for EU institutions (the EDPS, under Article 100) and general purpose AI models (the Commission). [...] | General purpose AI models | Intentio",
+      "score": 7.45,
+      "rank_reason": "Recent compliance guide referencing the 2026 Digital Omnibus and the Article 101 fine ceiling."
     }
   ],
   "critic_notes": [],
