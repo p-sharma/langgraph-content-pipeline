@@ -38,7 +38,7 @@ def score_results(topic: str, guidance: str | None, results: list[SearchResult])
         return []
 
     try:
-        llm = get_llm().with_structured_output(Ranking)
+        llm = get_llm("ranker").with_structured_output(Ranking)
         ranking = llm.invoke([
             SystemMessage(RANKER_SYSTEM),
             HumanMessage(RANKER_USER.format(
@@ -79,5 +79,5 @@ def ranker(state: State) -> dict:
     top = [r for r in ranked if r["score"] >= MIN_SCORE][:TOP_K]
     if not top:
         top = ranked[:3]   # nothing passed the bar: keep the best 3 and let the Critic be strict
-    print(f"📊 Ranker: {len(ranked)} scored → kept {len(top)}")
+    print(f"Ranker: {len(ranked)} scored → kept {len(top)}")
     return {"sources": top}

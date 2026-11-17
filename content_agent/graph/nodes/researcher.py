@@ -24,7 +24,7 @@ def extract_facts(topic: str, guidance: str | None, source: RankedSource) -> lis
         print(f"   ↳ using snippet for {source['url']}")
 
     try:
-        llm = get_llm().with_structured_output(ExtractedFacts)
+        llm = get_llm("researcher").with_structured_output(ExtractedFacts)
         result = llm.invoke([
             SystemMessage(RESEARCHER_SYSTEM),
             HumanMessage(RESEARCHER_USER.format(
@@ -39,8 +39,10 @@ def extract_facts(topic: str, guidance: str | None, source: RankedSource) -> lis
     return [
         Fact(claim=claim.strip(), source_url=source["url"])
         for claim in result.facts[:MAX_FACTS_PER_SOURCE]
+        if claim.strip()
     ]
-  
+
+
 def research_source(task: ResearchTask) -> dict:
     """Worker node: one instance runs per source, in parallel."""
     facts = extract_facts(task["topic"], task.get("guidance"), task["source"])
@@ -61,29 +63,3 @@ def fan_out_to_researchers(state: State) -> list[Send] | str:
         ))
         for source in sources
     ]
-
-def extract_facts(topic: str, guidance: str | None, source: RankedSource) -> list[Fact]:
-    """Fetch one source and extract facts from it."""
-    text = fetch_text(source["url"])
-    if text is None:
-        text = source["snippet"]   # fall back to the search snippet
-        print(f"   ↳ using snippet for {source['url']}")
-
-    try:
-        llm = get_llm().with_structured_output(ExtractedFacts)
-        result = llm.invoke([
-            SystemMessage(RESEARCHER_SYSTEM),
-            HumanMessage(RESEARCHER_USER.format(
-                topic=topic, guidance=guidance or "none", text=text,
-            )),
-        ])
-    except Exception as e:
-        print(f"⚠️ Fact extraction failed for {source['url']}: {e}")
-        return []
-
-    # The URL is attached by OUR code, never written by the LLM
-    return [
-        Fact(claim=claim.strip(), source_url=source["url"])
-        for claim in result.facts[:MAX_FACTS_PER_SOURCE]
-    ]
-      

@@ -17,7 +17,7 @@ class SearchPlan(BaseModel):
 def plan_queries(topic: str, guidance: str | None) -> list[str]:
     """Ask the LLM for search queries. Fall back to the plain topic if anything fails."""
     try:
-        llm= get_llm().with_structured_output(SearchPlan)
+        llm = get_llm("searcher").with_structured_output(SearchPlan)
         plan = llm.invoke([
             SystemMessage(SEARCHER_SYSTEM),
             HumanMessage(SEARCHER_USER.format(topic=topic, guidance=guidance or "none"))

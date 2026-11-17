@@ -36,8 +36,9 @@ class State(TypedDict):
     search_queries: list[str]
     search_results: list[SearchResult]    # Searcher
     sources: list[RankedSource]           # Ranker (top 4-5 only)
-    facts: list[Fact]                     # Researcher
-    draft: str                            # Writer
+    facts: Annotated[list[Fact], operator.add]   # research workers append in parallel
+    draft: str                            # Writer: text with [n] citation markers
+    references: list[str]                 # Writer: references[n-1] is the URL for [n]
 
     # Critic loop
     critic_notes: Annotated[list[str], operator.add]   # appended, never overwritten

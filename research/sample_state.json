@@ -139,5 +139,135 @@
     }
   ],
   "critic_notes": [],
-  "status": "researching"
+  "status": "researching",
+  "facts": [
+    {
+      "claim": "The Commission can fine providers of general-purpose AI models up to 3% of their annual total worldwide turnover in the preceding financial year or EUR 15 million, whichever is higher.",
+      "source_url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-101"
+    },
+    {
+      "claim": "Fines can be imposed when the Commission finds a general-purpose AI model provider intentionally or negligently infringed the relevant provisions of the AI Act.",
+      "source_url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-101"
+    },
+    {
+      "claim": "Fines can also be imposed on a provider that failed to comply with a document or information request under Article 91, or supplied incorrect, incomplete or misleading information.",
+      "source_url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-101"
+    },
+    {
+      "claim": "Fines can be imposed on a provider that failed to comply with a measure requested under Article 93, or failed to give the Commission access to a general-purpose AI model (or one with systemic risk) for evaluation under Article 92.",
+      "source_url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-101"
+    },
+    {
+      "claim": "When setting the fine amount, the nature, gravity and duration of the infringement must be considered, along with proportionality and appropriateness, and commitments made under Article 93(3) or in codes of practice under Article 56 are taken into account.",
+      "source_url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-101"
+    },
+    {
+      "claim": "Before adopting a fine decision, the Commission must communicate its preliminary findings to the provider and give it an opportunity to be heard.",
+      "source_url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-101"
+    },
+    {
+      "claim": "Fines under this Article must be effective, proportionate and dissuasive, and information on fines must be communicated to the Board as appropriate.",
+      "source_url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-101"
+    },
+    {
+      "claim": "The Court of Justice of the European Union has unlimited jurisdiction to review Commission fine decisions and may cancel, reduce or increase the fine.",
+      "source_url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-101"
+    },
+    {
+      "claim": "Under Article 101 of the EU AI Act, the Commission may impose fines on providers of general-purpose AI models of up to 3% of their annual total worldwide turnover in the preceding financial year or EUR 15,000,000, whichever is higher.",
+      "source_url": "https://www.artificial-intelligence-act.com/Artificial_Intelligence_Act_Article_101.html"
+    },
+    {
+      "claim": "A fine may be imposed when the Commission finds that a general-purpose AI model provider intentionally or negligently infringed the relevant provisions of the Regulation.",
+      "source_url": "https://www.artificial-intelligence-act.com/Artificial_Intelligence_Act_Article_101.html"
+    },
+    {
+      "claim": "Fines may also be imposed if a provider fails to comply with a request for documents or information under Article 91, or supplies incorrect, incomplete or misleading information.",
+      "source_url": "https://www.artificial-intelligence-act.com/Artificial_Intelligence_Act_Article_101.html"
+    },
+    {
+      "claim": "Fines may be imposed if a provider fails to comply with a measure requested under Article 93, or fails to give the Commission access to a general-purpose AI model (or one with systemic risk) for evaluation under Article 92.",
+      "source_url": "https://www.artificial-intelligence-act.com/Artificial_Intelligence_Act_Article_101.html"
+    },
+    {
+      "claim": "When fixing the amount of a fine or periodic penalty payment, the Commission must consider the nature, gravity and duration of the infringement, applying the principles of proportionality and appropriateness.",
+      "source_url": "https://www.artificial-intelligence-act.com/Artificial_Intelligence_Act_Article_101.html"
+    },
+    {
+      "claim": "The Commission must also take into account commitments made under Article 93(3) or made in relevant codes of practice under Article 56 when setting the fine.",
+      "source_url": "https://www.artificial-intelligence-act.com/Artificial_Intelligence_Act_Article_101.html"
+    },
+    {
+      "claim": "Before adopting a fine decision, the Commission must communicate its preliminary findings to the provider and give it an opportunity to be heard.",
+      "source_url": "https://www.artificial-intelligence-act.com/Artificial_Intelligence_Act_Article_101.html"
+    },
+    {
+      "claim": "The Court of Justice of the European Union has unlimited jurisdiction to review Commission fine decisions under this article and may cancel, reduce or increase the fine.",
+      "source_url": "https://www.artificial-intelligence-act.com/Artificial_Intelligence_Act_Article_101.html"
+    },
+    {
+      "claim": "The AI Act rules on general-purpose AI (GPAI) models became effective in August 2025.",
+      "source_url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+    },
+    {
+      "claim": "For GPAI models, the AI Act puts in place rules on transparency and copyright for providers, and providers of GPAI models that may pose systemic risks should assess and mitigate those risks.",
+      "source_url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+    },
+    {
+      "claim": "From 2 August 2026, the AI Office holds enforcement powers over GPAI models and can request technical documentation, evaluate models, require corrective measures and issue fines for non-compliance.",
+      "source_url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+    },
+    {
+      "claim": "The AI Office is one of the bodies responsible for implementing, supervising and enforcing the AI Act alongside Member State authorities, with the AI Board, Scientific Panel and Advisory Forum advising on governance.",
+      "source_url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+    },
+    {
+      "claim": "In July 2025, the Commission published the Guidelines on the scope of GPAI obligations, the GPAI Code of Practice (a voluntary compliance tool covering transparency, copyright, and safety and security), and a template for public summaries of training content.",
+      "source_url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+    },
+    {
+      "claim": "The template for the public summary of training content requires GPAI providers to give an overview of training data, including the sources it was obtained from such as large datasets and top domain names.",
+      "source_url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+    },
+    {
+      "claim": "Some GPAI models could carry systemic risks if they are very capable or widely used, according to the source.",
+      "source_url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+    },
+    {
+      "claim": "The GPAI Code of Practice was submitted to the Commission by independent experts and is described as a voluntary tool, and the source does not state the specific fine amounts for GPAI non-compliance.",
+      "source_url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+    },
+    {
+      "claim": "Under the EU AI Act, providers of general purpose AI models can be fined up to 15,000,000 EUR or 3 percent of total worldwide annual turnover, whichever is higher, under Article 101.",
+      "source_url": "https://compyl.com/blog/eu-ai-act-penalties"
+    },
+    {
+      "claim": "The European Commission, acting through the AI Office, enforces directly against providers of general purpose AI models rather than leaving enforcement to national regulators.",
+      "source_url": "https://compyl.com/blog/eu-ai-act-penalties"
+    },
+    {
+      "claim": "GPAI fines under Article 101 cover intentional or negligent infringement of GPAI obligations, supplying misleading information, and failing to comply with Commission requests, evaluations or corrective measures.",
+      "source_url": "https://compyl.com/blog/eu-ai-act-penalties"
+    },
+    {
+      "claim": "The Commission gained its enforcement and fining powers over general purpose AI model providers from August 2, 2026.",
+      "source_url": "https://compyl.com/blog/eu-ai-act-penalties"
+    },
+    {
+      "claim": "The penalty framework of the EU AI Act became applicable on August 2, 2025.",
+      "source_url": "https://compyl.com/blog/eu-ai-act-penalties"
+    },
+    {
+      "claim": "The Digital Omnibus on AI (Regulation (EU) 2026/1744) deferred several high-risk deadlines but did not change the fine amounts in Article 99.",
+      "source_url": "https://compyl.com/blog/eu-ai-act-penalties"
+    },
+    {
+      "claim": "Article 99(6) caps fines for SMEs and startups at the lower of the two figures rather than the higher.",
+      "source_url": "https://compyl.com/blog/eu-ai-act-penalties"
+    },
+    {
+      "claim": "The percentage-based fine caps are calculated on total worldwide annual turnover, not EU turnover.",
+      "source_url": "https://compyl.com/blog/eu-ai-act-penalties"
+    }
+  ]
 }
