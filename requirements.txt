@@ -5,7 +5,7 @@ psycopg[binary,pool]>=3.2          # Postgres driver the checkpointer uses
 
 # --- LLM ---
 langchain>=1.0                     # gives us init_chat_model() to switch LLM providers easily
-langchain-anthropic>=1.0              # OpenAI models (swap for langchain-anthropic if you prefer)
+langchain-anthropic>=1.0           # Claude models (default provider; swap for another langchain-<provider> package)
 
 # --- Tools ---
 langchain-tavily>=0.2              # web search built for LLM agents
