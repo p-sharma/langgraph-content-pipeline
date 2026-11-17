@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 
 from content_agent.graph.prompts import RESEARCHER_SYSTEM, RESEARCHER_USER
 from content_agent.graph.state import Fact, RankedSource, State, ResearchTask
-from content_agent.llm import get_llm
+from content_agent.llm import get_structured_llm
 from content_agent.tools.fetch import fetch_text
 
 from langgraph.graph import END
@@ -24,7 +24,7 @@ def extract_facts(topic: str, guidance: str | None, source: RankedSource) -> lis
         print(f"   ↳ using snippet for {source['url']}")
 
     try:
-        llm = get_llm("researcher").with_structured_output(ExtractedFacts)
+        llm = get_structured_llm("researcher", ExtractedFacts)
         result = llm.invoke([
             SystemMessage(RESEARCHER_SYSTEM),
             HumanMessage(RESEARCHER_USER.format(

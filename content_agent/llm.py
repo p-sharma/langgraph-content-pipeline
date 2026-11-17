@@ -3,6 +3,8 @@ from functools import lru_cache
 from typing import Literal
 
 from langchain.chat_models import init_chat_model
+from langchain_core.runnables import Runnable
+from pydantic import BaseModel
 
 Role = Literal["searcher", "ranker", "researcher", "writer", "critic"]
 DEFAULT_MODEL = "anthropic:claude-sonnet-5-5"
@@ -21,3 +23,13 @@ def get_llm(role: Role):
         or DEFAULT_MODEL
     )
     return init_chat_model(model, max_tokens=4096)
+
+
+def get_structured_llm(role: Role, schema: type[BaseModel]) -> Runnable:
+    """A model for `role` whose output is parsed into `schema`.
+
+    Uses the provider's native JSON-schema output (constrained decoding) instead of
+    tool calling: newer Claude models can't be forced to call a tool, so tool-based
+    structured output is unreliable on them.
+    """
+    return get_llm(role).with_structured_output(schema, method="json_schema")

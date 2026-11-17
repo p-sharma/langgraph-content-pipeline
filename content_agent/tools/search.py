@@ -21,11 +21,11 @@ def search_web(query: str) -> list[SearchResult]:
     try:
         response = _get_tool().invoke({"query": query})
     except Exception as e:
-        print(f"⚠️ Search failed for {query!r}: {e}")
+        print(f"Search failed for {query!r}: {e}")
         return []
 
     if not isinstance(response, dict) or "error" in response:
-        print(f"⚠️ Search returned an error for {query!r}: {response}")
+        print(f"Search returned an error for {query!r}: {response}")
         return []
 
     return [

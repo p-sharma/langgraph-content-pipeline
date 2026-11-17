@@ -5,23 +5,29 @@ from pydantic import BaseModel, Field
 
 from content_agent.graph.prompts import RANKER_SYSTEM, RANKER_USER
 from content_agent.graph.state import RankedSource, SearchResult, State
-from content_agent.llm import get_llm
+from content_agent.llm import get_structured_llm
 
 WEIGHTS = {"relevance": 0.5, "credibility": 0.35, "recency": 0.15}
 TOP_K = 5          # how many results to keep
 MIN_SCORE = 5.0    # results below this are dropped
+MAX_SUBSCORE = 10  # each sub-score is clamped to 0..MAX_SUBSCORE
 
 
 class SourceScore(BaseModel):
     index: int = Field(description="The number of the search result")
-    relevance: int = Field(ge=0, le=10)
-    credibility: int = Field(ge=0, le=10)
-    recency: int = Field(ge=0, le=10)
+    relevance: int = Field(description=f"0 to {MAX_SUBSCORE}")
+    credibility: int = Field(description=f"0 to {MAX_SUBSCORE}")
+    recency: int = Field(description=f"0 to {MAX_SUBSCORE}")
     reason: str = Field(description="One short sentence explaining the scores")
 
 
 class Ranking(BaseModel):
     scores: list[SourceScore]
+
+
+def _clamp(score: int) -> int:
+    """Pull an out-of-range sub-score back into 0..MAX_SUBSCORE."""
+    return max(0, min(MAX_SUBSCORE, score))
 
 
 def _format_results(results: list[SearchResult]) -> str:
@@ -38,7 +44,7 @@ def score_results(topic: str, guidance: str | None, results: list[SearchResult])
         return []
 
     try:
-        llm = get_llm("ranker").with_structured_output(Ranking)
+        llm = get_structured_llm("ranker", Ranking)
         ranking = llm.invoke([
             SystemMessage(RANKER_SYSTEM),
             HumanMessage(RANKER_USER.format(
@@ -49,7 +55,7 @@ def score_results(topic: str, guidance: str | None, results: list[SearchResult])
             )),
         ])
     except Exception as e:
-        print(f"⚠️ Ranking failed, keeping search order: {e}")
+        print(f"Ranking failed, keeping search order: {e}")
         return [
             RankedSource(**r, score=0.0, rank_reason="Ranking unavailable")
             for r in results
@@ -62,9 +68,9 @@ def score_results(topic: str, guidance: str | None, results: list[SearchResult])
             continue   # skip duplicates and indexes that don't exist
         seen.add(s.index)
         final = (
-            WEIGHTS["relevance"] * s.relevance
-            + WEIGHTS["credibility"] * s.credibility
-            + WEIGHTS["recency"] * s.recency
+            WEIGHTS["relevance"] * _clamp(s.relevance)
+            + WEIGHTS["credibility"] * _clamp(s.credibility)
+            + WEIGHTS["recency"] * _clamp(s.recency)
         )
         ranked.append(RankedSource(**results[s.index], score=round(final, 2), rank_reason=s.reason))
 

@@ -5,8 +5,8 @@ import streamlit as st
 
 API_URL = os.getenv("API_URL", "http://localhost:8000")
 
-st.set_page_config(page_title="Content Agent", page_icon="📝")
-st.title("📝 Content Agent")
+st.set_page_config(page_title="Content Agent")
+st.title("Content Agent")
 st.caption("Enter a topic. Agents will research it and draft a short summary for your approval.")
 
 with st.form("new_run"):
