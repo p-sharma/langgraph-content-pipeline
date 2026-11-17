@@ -42,8 +42,8 @@ class State(TypedDict):
 
     # Critic loop
     critic_notes: Annotated[list[str], operator.add]   # appended, never overwritten
-    critic_passed: bool
-    revision_count: int
+    critic_passed: bool | None            # None = critic could not run (fail open)
+    revision_count: int                   # Critic: +1 on each failed review
 
     # Human approval
     human_feedback: str | None

@@ -25,8 +25,9 @@ flowchart TD
     RANK --> R2[research_source]
     RANK --> R3[research_source]
     R1 & R2 & R3 -- "facts merged by<br/>operator.add reducer" --> WRITE[writer<br/>~200-word summary<br/>citations renumbered to references]
-    WRITE --> CRITIC{critic<br/>are all claims supported?}
-    CRITIC -- "unsupported claims<br/>(max 2-3 loops)" --> WRITE
+    WRITE --> CRITIC{critic<br/>every claim supported by cited facts?<br/>170-230 words?}
+    CRITIC -- "fail: issues fed back<br/>(max 2 revisions)" --> WRITE
+    CRITIC -- "pass, not reviewed,<br/>or budget used up" --> NOW([End: current graph,<br/>until approval is built])
     CRITIC -- passes --> APPROVAL{{approval<br/>interrupt}}
     APPROVAL -- "request changes<br/>(feedback)" --> WRITE
     APPROVAL -- reject --> REJECTED([End: rejected, reason logged])
@@ -34,10 +35,10 @@ flowchart TD
     PUBLISH --> DONE([End: published])
 
     classDef planned stroke-dasharray: 5 5,opacity:0.7
-    class CRITIC,APPROVAL,REJECTED,PUBLISH,DONE planned
+    class APPROVAL,REJECTED,PUBLISH,DONE planned
 ```
 
-Today the graph ends after `writer`; the critic edge replaces `writer -> END` next.
+The **critic loop** is the graph's first cycle. `route_after_critic` returns `"writer"` on a fail, sending the draft back with the critic's notes as revision feedback, and `END` otherwise. Pass/fail is decided in code: the LLM only lists unsupported sentences (quote, problem, fix), and the word count is checked deterministically. `critic_passed` is `None` when the critic could not run (fail open). After 2 revisions the run ends with the last draft and `critic_passed=False`.
 
 The research step is a **map-reduce fan-out**: `fan_out_to_researchers` returns one `Send("research_source", ResearchTask)` per ranked source, so the workers run in parallel and each one sees only its own source. Each worker returns `{"facts": [...]}`, and the `operator.add` reducer on `State.facts` concatenates the results instead of letting the last worker overwrite the others.
 
@@ -64,7 +65,7 @@ class State(TypedDict):
 
     # Critic loop
     critic_notes: Annotated[list[str], operator.add]   # appended, never overwritten
-    critic_passed: bool
+    critic_passed: bool | None               # None = critic could not run
     revision_count: int
 
     # Human approval
@@ -98,7 +99,7 @@ AutomatedContentCreation/
 │   │       ├── ranker.py     # scores and keeps top 5
 │   │       ├── researcher.py # Send fan-out + per-source fact extraction
 │   │       ├── writer.py     # draft + citation renumbering, revision prompt
-│   │       ├── critic.py     # (planned)
+│   │       ├── critic.py     # support + length check, revision-loop router
 │   │       ├── approval.py   # (planned) human-in-the-loop interrupt
 │   │       └── publisher.py  # (planned)
 │   ├── tools/
@@ -157,7 +158,7 @@ streamlit run ui/app.py                       # UI (API_URL defaults to http://l
 - [x] Nodes: searcher → ranker → researcher (parallel `Send`) → writer
 - [x] `llm.py`: per-role models, native JSON-schema structured output
 - [ ] Researcher prompt: stop meta-facts ("the source does not state...")
-- [ ] Critic node + revision loop
+- [x] Critic node + revision loop
 - [ ] `failed` status + routing for no-sources / no-draft
 - [ ] Human approval interrupt + Postgres checkpointer
 - [ ] FastAPI endpoints (`POST /runs`, `GET /runs/{id}` exist with in-memory storage; not wired to the graph)
