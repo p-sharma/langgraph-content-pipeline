@@ -43,7 +43,7 @@ The **critic loop** is the graph's first cycle. `route_after_critic` returns `"w
 
 The research step is a **map-reduce fan-out**: `fan_out_to_researchers` returns one `Send("research_source", ResearchTask)` per ranked source, so the workers run in parallel and each one sees only its own source. Each worker returns `{"facts": [...]}`, and the `operator.add` reducer on `State.facts` concatenates the results instead of letting the last worker overwrite the others.
 
-The **approval** node uses LangGraph `interrupt()`. The graph pauses and its state is saved by the checkpointer (`InMemorySaver` in notebooks, Postgres planned for the API). The reviewer sees the draft, references, the critic's verdict (`passed`, `not_reviewed` or `budget_exhausted`) and, when the budget ran out, the critic's unresolved issues. The run resumes with `Command(resume={"action": ..., "feedback": ...})`:
+The **approval** node uses LangGraph `interrupt()`. The graph pauses and its state is saved by the checkpointer (`InMemorySaver` in notebooks, `PostgresSaver` in the API, so a paused run survives a server restart). The reviewer sees the draft, references, the critic's verdict (`passed`, `not_reviewed` or `budget_exhausted`) and, when the budget ran out, the critic's unresolved issues. The run resumes with `Command(resume={"action": ..., "feedback": ...})`:
 
 | Action | Effect |
 |---|---|
@@ -79,10 +79,10 @@ class State(TypedDict):
 
     # Human approval
     human_feedback: str | None
-    status: Literal["queued", "researching", "awaiting_approval", "approved", "rejected", "failed"]
+    status: Literal["approved", "rejected", "failed"]   # end states only
 ```
 
-`ResearchTask` (topic, guidance, one `RankedSource`) is the private input each `research_source` worker receives through `Send`; it is not part of `State`. Likewise `ApprovalDecision` (`action`, `feedback`) is the resume value the approval node reads; only its effects are written to `State`. The node writes only the end states `approved` / `rejected`; while a run is paused, "awaiting approval" is read from the checkpoint rather than stored.
+`ResearchTask` (topic, guidance, one `RankedSource`) is the private input each `research_source` worker receives through `Send`; it is not part of `State`. Likewise `ApprovalDecision` (`action`, `feedback`) is the resume value the approval node reads; only its effects are written to `State`. `status` holds only end states, because a node can only write a value while it runs; queued, running and awaiting approval are worked out by the API (see below).
 
 ## Project structure
 
@@ -116,8 +116,11 @@ AutomatedContentCreation/
 │   │   ├── search.py         # Tavily wrapper
 │   │   └── fetch.py          # httpx + trafilatura page text extraction
 │   └── api/
-│       ├── main.py           # FastAPI app (in-memory runs, not yet wired to the graph)
-│       └── schemas.py        # request/response models
+│       ├── main.py           # FastAPI app: lifespan (pool, checkpointer, graph, executor), endpoints
+│       ├── schemas.py        # request/response models, RunStatus
+│       ├── runs.py           # runs table: one row per run (no status column)
+│       ├── status.py         # status worked out from the runs row + graph checkpoint
+│       └── active.py         # run IDs with a graph.invoke in progress (busy guard)
 ├── ui/
 │   └── app.py                # Streamlit UI: topic form, calls the API at $API_URL
 └── tests/                    # (planned)
@@ -142,22 +145,43 @@ python -m pip install -r requirements-dev.txt
 docker compose up -d                   # start Postgres
 ```
 
-Create `.env` in the project root with `ANTHROPIC_API_KEY` and `TAVILY_API_KEY`. Optional: `LLM_MODEL` or `LLM_MODEL_<ROLE>` (e.g. `LLM_MODEL_WRITER`) to override the default model, `LANGSMITH_*` for tracing, and `DATABASE_URL` once the checkpointer lands.
+Create `.env` in the project root with `ANTHROPIC_API_KEY` and `TAVILY_API_KEY`. Optional: `LLM_MODEL` or `LLM_MODEL_<ROLE>` (e.g. `LLM_MODEL_WRITER`) to override the default model, `LANGSMITH_*` for tracing, and `DATABASE_URL` (defaults to the docker-compose database, `postgresql://agent:agent@localhost:5432/content_agent`).
 
 Run commands from the project root:
 
 ```bash
-uvicorn content_agent.api.main:app --reload   # API on :8000
-streamlit run ui/app.py                       # UI (API_URL defaults to http://localhost:8000)
+uvicorn content_agent.api.main:app --env-file .env --reload   # API on :8000 (fails at startup if Postgres is down)
+streamlit run ui/app.py                                       # UI (API_URL defaults to http://localhost:8000)
 ```
 
-## Planned API
+`--reload` restarts the server on every file save, which stops runs that are in progress (see Known limitations).
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| POST | `/runs` | Start a run with `{topic, guidance}` |
-| GET | `/runs/{id}` | Run status, sources, draft |
-| POST | `/runs/{id}/resume` | Human decision: `approve` / `request_changes` (+ feedback) / `reject` |
+## API
+
+| Method | Endpoint | Purpose | Responses |
+|---|---|---|---|
+| POST | `/runs` | Start a run with `{topic, guidance}`; the graph runs in the background | 201, 422 |
+| GET | `/runs/{id}` | Status, draft, references, sources, feedback; `review` while awaiting approval | 200, 404, 422 |
+| POST | `/runs/{id}/resume` | `{action, feedback}`: `approve` / `request_changes` (feedback required) / `reject` | 202, 404, 409 (busy or not awaiting approval), 422 |
+
+The run ID is the graph's `thread_id`. Startup (FastAPI `lifespan`) opens one psycopg `ConnectionPool` (`autocommit`, `dict_row`, `prepare_threshold=0`, as `PostgresSaver` requires), runs `checkpointer.setup()`, creates the `runs` table and builds the graph once. Runs execute on a dedicated `ThreadPoolExecutor` (4 at a time; extra runs wait in its queue), so long LLM calls never hold the threads that serve requests.
+
+**Status is never stored**; `GET` works it out on every call, in this order:
+
+| Condition | Status |
+|---|---|
+| the background run crashed (`runs.error` is set) | `failed` |
+| a `graph.invoke` for this run is in progress in this process | `running` |
+| no checkpoint yet | `queued` |
+| the checkpoint has a pending interrupt | `awaiting_approval` |
+| the checkpoint has a next node | `running` |
+| finished: `State.status` | `approved` / `rejected` / `failed` |
+| finished without an end state (e.g. no sources) | `failed` |
+
+### Known limitations
+
+- **Single uvicorn worker only.** The busy guard that turns a double-clicked resume into a 409 is in-process memory.
+- **A restart in the middle of a run leaves it reporting `running`.** Its checkpoint still has a next node, but nothing is executing it. Runs paused at approval are not affected and resume normally. The fix is to resume these runs with `invoke(None)` at startup.
 
 ## Status
 
@@ -170,9 +194,10 @@ streamlit run ui/app.py                       # UI (API_URL defaults to http://l
 - [ ] Researcher prompt: stop meta-facts ("the source does not state...")
 - [x] Critic node + revision loop
 - [x] `failed` status for no-draft runs
-- [ ] `failed` status for no-sources runs (ranker currently ends without setting a status)
+- [ ] `failed` status for no-sources runs in the graph (the API already reports them as `failed`)
 - [x] Human approval interrupt (approve / request changes / reject), tested with `InMemorySaver`
-- [ ] Postgres checkpointer
-- [ ] FastAPI endpoints (`POST /runs`, `GET /runs/{id}` exist with in-memory storage; not wired to the graph)
+- [x] Postgres checkpointer (paused runs survive a server restart)
+- [x] FastAPI endpoints wired to the graph: `POST /runs`, `GET /runs/{id}`, `POST /runs/{id}/resume`
+- [ ] Resume runs interrupted by a restart, at startup
 - [ ] Minimal UI: topic input (done), live run view, approval screen
 - [ ] Deploy

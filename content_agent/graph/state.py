@@ -21,7 +21,9 @@ class Fact(TypedDict):
     source_url: str       # every fact must be traceable to a source
 
 
-Status = Literal["queued", "researching", "awaiting_approval", "approved", "rejected", "failed"]
+# Only end states: a node can write these. Queued / running / awaiting approval are
+# worked out by the API from the checkpoint, because no node runs at those moments.
+Status = Literal["approved", "rejected", "failed"]
 
 
 class ApprovalDecision(TypedDict):

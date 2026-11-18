@@ -12,9 +12,8 @@ langchain-tavily>=0.2              # web search built for LLM agents
 httpx>=0.27                        # downloads web pages
 trafilatura>=2.0                   # pulls the article text out of messy HTML
 
-# --- API & config ---
+# --- API ---
 fastapi>=0.115
 uvicorn[standard]>=0.30            # server that runs FastAPI
-pydantic-settings>=2.4             # loads .env into a typed config object
 
 streamlit>=1.40                    # Python-only web UI

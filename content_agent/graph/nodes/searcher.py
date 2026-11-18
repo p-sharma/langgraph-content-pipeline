@@ -41,5 +41,4 @@ def searcher(state: State)-> dict:
     return {
         "search_queries": queries,
         "search_results": results,
-        "status": "researching",
     }
