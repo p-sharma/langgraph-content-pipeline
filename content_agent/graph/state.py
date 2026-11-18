@@ -21,7 +21,13 @@ class Fact(TypedDict):
     source_url: str       # every fact must be traceable to a source
 
 
-Status = Literal["queued", "researching", "awaiting_approval", "approved", "rejected"]
+Status = Literal["queued", "researching", "awaiting_approval", "approved", "rejected", "failed"]
+
+
+class ApprovalDecision(TypedDict):
+    """The human's answer, passed in with Command(resume=...) to continue a paused run."""
+    action: Literal["approve", "request_changes", "reject"]
+    feedback: str | None   # required for request_changes; the reason for reject
 
 
 # ---------- The shared State ----------

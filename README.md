@@ -27,22 +27,31 @@ flowchart TD
     R1 & R2 & R3 -- "facts merged by<br/>operator.add reducer" --> WRITE[writer<br/>~200-word summary<br/>citations renumbered to references]
     WRITE --> CRITIC{critic<br/>every claim supported by cited facts?<br/>170-230 words?}
     CRITIC -- "fail: issues fed back<br/>(max 2 revisions)" --> WRITE
-    CRITIC -- "pass, not reviewed,<br/>or budget used up" --> NOW([End: current graph,<br/>until approval is built])
-    CRITIC -- passes --> APPROVAL{{approval<br/>interrupt}}
-    APPROVAL -- "request changes<br/>(feedback)" --> WRITE
-    APPROVAL -- reject --> REJECTED([End: rejected, reason logged])
-    APPROVAL -- approve --> PUBLISH[publisher<br/>save to Postgres]
+    CRITIC -- "no draft" --> FAILED([End: failed])
+    CRITIC -- "pass, not reviewed,<br/>or budget used up" --> APPROVAL{{approval<br/>interrupt: pause for a human}}
+    APPROVAL -- "request changes (feedback)<br/>fresh critic budget" --> WRITE
+    APPROVAL -- reject --> REJECTED([End: rejected, reason in human_feedback])
+    APPROVAL -- "approve" --> APPROVED([End: approved<br/>current graph, until publisher is built])
+    APPROVAL -. approve .-> PUBLISH[publisher<br/>save to Postgres]
     PUBLISH --> DONE([End: published])
 
     classDef planned stroke-dasharray: 5 5,opacity:0.7
-    class APPROVAL,REJECTED,PUBLISH,DONE planned
+    class PUBLISH,DONE planned
 ```
 
-The **critic loop** is the graph's first cycle. `route_after_critic` returns `"writer"` on a fail, sending the draft back with the critic's notes as revision feedback, and `END` otherwise. Pass/fail is decided in code: the LLM only lists unsupported sentences (quote, problem, fix), and the word count is checked deterministically. `critic_passed` is `None` when the critic could not run (fail open). After 2 revisions the run ends with the last draft and `critic_passed=False`.
+The **critic loop** is the graph's first cycle. `route_after_critic` returns `"writer"` on a fail, sending the draft back with the critic's notes as revision feedback, and `"approval"` otherwise, so a pass, a skipped review (`critic_passed=None`, fail open) and a used-up budget (after 2 revisions) all reach a human. Only a run with no draft at all ends early, with `status="failed"`. Pass/fail is decided in code: the LLM only lists unsupported sentences (quote, problem, fix), and the word count (170-230) is checked deterministically. The length check is skipped while an editor's feedback is set, so a request like "cut it to 120 words" is not undone by the critic.
 
 The research step is a **map-reduce fan-out**: `fan_out_to_researchers` returns one `Send("research_source", ResearchTask)` per ranked source, so the workers run in parallel and each one sees only its own source. Each worker returns `{"facts": [...]}`, and the `operator.add` reducer on `State.facts` concatenates the results instead of letting the last worker overwrite the others.
 
-The human approval step uses LangGraph `interrupt()`. The graph pauses, its state is saved by the **Postgres checkpointer**, and the run resumes later through `Command(resume=...)` when the user approves, requests changes or rejects.
+The **approval** node uses LangGraph `interrupt()`. The graph pauses and its state is saved by the checkpointer (`InMemorySaver` in notebooks, Postgres planned for the API). The reviewer sees the draft, references, the critic's verdict (`passed`, `not_reviewed` or `budget_exhausted`) and, when the budget ran out, the critic's unresolved issues. The run resumes with `Command(resume={"action": ..., "feedback": ...})`:
+
+| Action | Effect |
+|---|---|
+| `approve` | `status="approved"`, end (the publisher will go here) |
+| `request_changes` | feedback (required) goes to the writer; `revision_count` resets so the rewrite gets a fresh critic budget |
+| `reject` | `status="rejected"`, the reason is kept in `human_feedback`, end |
+
+The node routes itself by returning `Command(update=..., goto=...)`; its `Command[Literal["writer", "__end__"]]` return type tells LangGraph the possible targets, so `builder.py` adds no edges out of it. An invalid decision does not raise: the node calls `interrupt()` again with an `error` in the payload, and the run stays paused. On resume LangGraph re-runs the node from the top, so nothing before `interrupt()` has side effects. [research/approval.ipynb](research/approval.ipynb) walks through approve, request changes and reject, starting from saved research.
 
 ## Shared state
 
@@ -70,10 +79,10 @@ class State(TypedDict):
 
     # Human approval
     human_feedback: str | None
-    status: Literal["queued", "researching", "awaiting_approval", "approved", "rejected"]
+    status: Literal["queued", "researching", "awaiting_approval", "approved", "rejected", "failed"]
 ```
 
-`ResearchTask` (topic, guidance, one `RankedSource`) is the private input each `research_source` worker receives through `Send`; it is not part of `State`.
+`ResearchTask` (topic, guidance, one `RankedSource`) is the private input each `research_source` worker receives through `Send`; it is not part of `State`. Likewise `ApprovalDecision` (`action`, `feedback`) is the resume value the approval node reads; only its effects are written to `State`. The node writes only the end states `approved` / `rejected`; while a run is paused, "awaiting approval" is read from the checkpoint rather than stored.
 
 ## Project structure
 
@@ -87,11 +96,12 @@ AutomatedContentCreation/
 ├── research/                 # notebooks + sample JSON: experiments before code moves into modules
 │   ├── explore.ipynb
 │   ├── search.ipynb / searcher.ipynb / ranker.ipynb / researcher.ipynb
+│   ├── approval.ipynb        # interrupt + resume: approve, request changes, reject
 │   └── sample_search.json, sample_state.json
 ├── content_agent/
 │   ├── llm.py                # get_llm(role) / get_structured_llm(role, schema), per-role model via env
 │   ├── graph/
-│   │   ├── state.py          # State, SearchResult, RankedSource, Fact, ResearchTask
+│   │   ├── state.py          # State, SearchResult, RankedSource, Fact, ResearchTask, ApprovalDecision
 │   │   ├── prompts.py        # all LLM prompts
 │   │   ├── builder.py        # wires nodes + edges into the graph
 │   │   └── nodes/
@@ -99,8 +109,8 @@ AutomatedContentCreation/
 │   │       ├── ranker.py     # scores and keeps top 5
 │   │       ├── researcher.py # Send fan-out + per-source fact extraction
 │   │       ├── writer.py     # draft + citation renumbering, revision prompt
-│   │       ├── critic.py     # support + length check, revision-loop router
-│   │       ├── approval.py   # (planned) human-in-the-loop interrupt
+│   │       ├── critic.py     # support + length check, routes to writer / approval / END
+│   │       ├── approval.py   # human-in-the-loop interrupt, routes with Command
 │   │       └── publisher.py  # (planned)
 │   ├── tools/
 │   │   ├── search.py         # Tavily wrapper
@@ -159,8 +169,10 @@ streamlit run ui/app.py                       # UI (API_URL defaults to http://l
 - [x] `llm.py`: per-role models, native JSON-schema structured output
 - [ ] Researcher prompt: stop meta-facts ("the source does not state...")
 - [x] Critic node + revision loop
-- [ ] `failed` status + routing for no-sources / no-draft
-- [ ] Human approval interrupt + Postgres checkpointer
+- [x] `failed` status for no-draft runs
+- [ ] `failed` status for no-sources runs (ranker currently ends without setting a status)
+- [x] Human approval interrupt (approve / request changes / reject), tested with `InMemorySaver`
+- [ ] Postgres checkpointer
 - [ ] FastAPI endpoints (`POST /runs`, `GET /runs/{id}` exist with in-memory storage; not wired to the graph)
 - [ ] Minimal UI: topic input (done), live run view, approval screen
 - [ ] Deploy

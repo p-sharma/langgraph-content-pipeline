@@ -14,7 +14,7 @@ from content_agent.llm import get_structured_llm
 
 MIN_WORDS = 170      # target is ~200; this range is checked in code, not by the LLM
 MAX_WORDS = 230
-MAX_REVISIONS = 2    # after this many rewrites, end with the last draft
+MAX_REVISIONS = 2    # after this many rewrites, send the last draft to approval
 
 
 # ---------- Schemas ----------
@@ -66,10 +66,14 @@ def review_draft(
     return result.issues
 
 
-def _format_review(issues: list[Issue], words: int) -> str:
+def _length_ok(words: int) -> bool:
+    return MIN_WORDS <= words <= MAX_WORDS
+
+
+def _format_review(issues: list[Issue], words: int, check_length: bool) -> str:
     """Turn the findings into one note: stored in critic_notes, read by the writer."""
     lines = []
-    if words < MIN_WORDS or words > MAX_WORDS:
+    if check_length and not _length_ok(words):
         lines.append(f"- Length: {words} words. Rewrite to {MIN_WORDS}-{MAX_WORDS} words.")
     for issue in issues:
         lines.append(f'- "{issue.sentence}"\n  Problem: {issue.problem}\n  Fix: {issue.fix}')
@@ -82,8 +86,8 @@ def critic(state: State) -> dict:
     """Graph node: check the draft. Passes only if no sentence is unsupported and length is in range."""
     draft = state.get("draft")
     if not draft:
-        print("Critic: no draft to review, skipping")
-        return {"critic_passed": None}
+        print("Critic: no draft to review, ending the run as failed")
+        return {"critic_passed": None, "status": "failed"}
 
     issues = review_draft(
         state["topic"],
@@ -96,23 +100,28 @@ def critic(state: State) -> dict:
         return {"critic_passed": None}   # fail open: end with the unreviewed draft
 
     words = _word_count(draft)
-    passed = not issues and MIN_WORDS <= words <= MAX_WORDS
+    # An editor's request (e.g. "cut it to 120 words") overrides the default length range
+    check_length = not state.get("human_feedback")
+    passed = not issues and (_length_ok(words) or not check_length)
     print(f"Critic: {'passed' if passed else 'failed'} ({len(issues)} issues, {words} words)")
 
     if passed:
         return {"critic_passed": True, "critic_notes": [f"Passed ({words} words)."]}
     return {
         "critic_passed": False,
-        "critic_notes": [_format_review(issues, words)],
+        "critic_notes": [_format_review(issues, words, check_length)],
         "revision_count": state.get("revision_count", 0) + 1,
     }
 
 
 def route_after_critic(state: State) -> str:
-    """Routing function: revise on a fail, unless the revision budget is used up."""
+    """Routing function: revise on a fail, unless the revision budget is used up.
+    Every other outcome goes to the human, except a run with no draft at all."""
+    if not state.get("draft"):
+        return END                                 # critic already set status="failed"
     if state.get("critic_passed") is not False:   # True (passed) or None (not reviewed)
-        return END
+        return "approval"
     if state.get("revision_count", 0) > MAX_REVISIONS:
-        print(f"Critic: still failing after {MAX_REVISIONS} revisions, ending with last draft")
-        return END
+        print(f"Critic: still failing after {MAX_REVISIONS} revisions, sending last draft to approval")
+        return "approval"
     return "writer"
