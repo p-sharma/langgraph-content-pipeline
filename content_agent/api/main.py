@@ -1,30 +1,31 @@
 import logging
-import os
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
 from uuid import UUID
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Query, Request
 from langgraph.checkpoint.postgres import PostgresSaver
 from langgraph.types import Command
 from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
 from starlette.datastructures import State
 
+from content_agent import posts
 from content_agent.api import runs
 from content_agent.api.active import ActiveRuns
 from content_agent.api.schemas import (
     CreateRunRequest,
+    PostOut,
     ResumeRequest,
     RunResponse,
     RunStatus,
 )
 from content_agent.api.status import derive_status, to_response
+from content_agent.db import DATABASE_URL, close_pool
 from content_agent.graph.builder import build_graph
 
 logger = logging.getLogger(__name__)
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://agent:agent@localhost:5432/content_agent")
 MAX_CONCURRENT_RUNS = 4   # also keeps parallel LLM and Tavily calls under rate limits
 
 
@@ -39,6 +40,7 @@ async def lifespan(app: FastAPI):
             "row_factory": dict_row,    # PostgresSaver reads rows as dicts; runs.py does too
         },
         max_size=10,
+        check=ConnectionPool.check_connection,   # replace connections a Postgres restart killed
         open=False,
     )
     pool.open(wait=True, timeout=10)   # fail at startup if Postgres is down, not on the first request
@@ -46,6 +48,7 @@ async def lifespan(app: FastAPI):
         checkpointer = PostgresSaver(pool)
         checkpointer.setup()           # creates the checkpoint tables; safe on every start
         runs.create_table(pool)
+        posts.create_table(pool)       # written by the publisher node, read by /posts
         app.state.pool = pool
         app.state.graph = build_graph(checkpointer=checkpointer)
         app.state.active = ActiveRuns()
@@ -57,6 +60,7 @@ async def lifespan(app: FastAPI):
         if hasattr(app.state, "executor"):
             # Don't wait for in-flight runs: they stop at their last checkpoint
             app.state.executor.shutdown(wait=False, cancel_futures=True)
+        close_pool()                   # the graph's own pool, if the publisher ever opened it
         pool.close()
 
 
@@ -128,6 +132,26 @@ def get_run(run_id: UUID, request: Request):
         raise HTTPException(status_code=404, detail="Run not found")
     snapshot = state.graph.get_state(_config(row["run_id"]))
     return to_response(row, snapshot, active=row["run_id"] in state.active)
+
+
+@app.get("/posts", response_model=list[PostOut])
+def list_posts(
+    request: Request,
+    limit: int = Query(default=20, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+):
+    """Published posts, newest first (the archive page)."""
+    return posts.list_posts(request.app.state.pool, limit, offset)
+
+
+@app.get("/posts/{run_id}", response_model=PostOut)
+def get_post(run_id: UUID, request: Request):
+    """The post a run published. 404 if the run is unknown or did not publish."""
+    post = posts.get_post(request.app.state.pool, str(run_id))   # posts.run_id is text
+    if post is None:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return post
+
 
 @app.get("/health")
 def health():

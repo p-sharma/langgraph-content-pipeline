@@ -14,8 +14,6 @@ This is a portfolio project meant to be deployed and shown, not a toy demo.
 
 ## Phase 1 graph
 
-Solid boxes are built; dashed boxes are planned.
-
 ```mermaid
 flowchart TD
     START([User enters topic + optional guidance]) --> SEARCH[searcher<br/>topic + 3-4 LLM queries via Tavily<br/>deduplicated results]
@@ -31,12 +29,8 @@ flowchart TD
     CRITIC -- "pass, not reviewed,<br/>or budget used up" --> APPROVAL{{approval<br/>interrupt: pause for a human}}
     APPROVAL -- "request changes (feedback)<br/>fresh critic budget" --> WRITE
     APPROVAL -- reject --> REJECTED([End: rejected, reason in human_feedback])
-    APPROVAL -- "approve" --> APPROVED([End: approved<br/>current graph, until publisher is built])
-    APPROVAL -. approve .-> PUBLISH[publisher<br/>save to Postgres]
+    APPROVAL -- "approve<br/>status=approved" --> PUBLISH[publisher<br/>store the post in Postgres<br/>one row per run]
     PUBLISH --> DONE([End: published])
-
-    classDef planned stroke-dasharray: 5 5,opacity:0.7
-    class PUBLISH,DONE planned
 ```
 
 The **critic loop** is the graph's first cycle. `route_after_critic` returns `"writer"` on a fail, sending the draft back with the critic's notes as revision feedback, and `"approval"` otherwise, so a pass, a skipped review (`critic_passed=None`, fail open) and a used-up budget (after 2 revisions) all reach a human. Only a run with no draft at all ends early, with `status="failed"`. Pass/fail is decided in code: the LLM only lists unsupported sentences (quote, problem, fix), and the word count (170-230) is checked deterministically. The length check is skipped while an editor's feedback is set, so a request like "cut it to 120 words" is not undone by the critic.
@@ -47,11 +41,15 @@ The **approval** node uses LangGraph `interrupt()`. The graph pauses and its sta
 
 | Action | Effect |
 |---|---|
-| `approve` | `status="approved"`, end (the publisher will go here) |
+| `approve` | `status="approved"`, then the publisher |
 | `request_changes` | feedback (required) goes to the writer; `revision_count` resets so the rewrite gets a fresh critic budget |
 | `reject` | `status="rejected"`, the reason is kept in `human_feedback`, end |
 
-The node routes itself by returning `Command(update=..., goto=...)`; its `Command[Literal["writer", "__end__"]]` return type tells LangGraph the possible targets, so `builder.py` adds no edges out of it. An invalid decision does not raise: the node calls `interrupt()` again with an `error` in the payload, and the run stays paused. On resume LangGraph re-runs the node from the top, so nothing before `interrupt()` has side effects. [research/approval.ipynb](research/approval.ipynb) walks through approve, request changes and reject, starting from saved research.
+The node routes itself by returning `Command(update=..., goto=...)`; its `Command[Literal["writer", "publisher", "__end__"]]` return type tells LangGraph the possible targets, so `builder.py` adds no edges out of it. An invalid decision does not raise: the node calls `interrupt()` again with an `error` in the payload, and the run stays paused. On resume LangGraph re-runs the node from the top, so nothing before `interrupt()` has side effects. [research/approval.ipynb](research/approval.ipynb) walks through approve, request changes and reject, starting from saved research.
+
+The **publisher** stores the approved draft in the `posts` table and sets `status="published"`. A post holds the topic, the draft with its citation markers, the references, the critic's verdict (the same one the reviewer saw), whether an editor requested changes (`edited`), and `published_at`. The node takes a second parameter, `config`, which LangGraph fills with the run's config; its `thread_id` is the run ID, so no extra State field is needed. It gets its database connection from `db.get_pool()`, a small pool created on first use, the same way nodes get their LLM from `get_llm()`.
+
+Publishing is safe to repeat: `run_id` is the table's primary key and the insert uses `ON CONFLICT DO NOTHING`, so if the publisher runs twice for one run (for example, retried after a crash), the second insert leaves the stored post unchanged. Errors are not caught: a failed insert stops the run with its last checkpoint saying "publisher is next", so it can be retried, and the API reports it as `failed` with the error. [research/publisher.ipynb](research/publisher.ipynb) prototypes the table and checks each step: approve, reject, request changes then approve, and a replay.
 
 ## Shared state
 
@@ -79,10 +77,10 @@ class State(TypedDict):
 
     # Human approval
     human_feedback: str | None
-    status: Literal["approved", "rejected", "failed"]   # end states only
+    status: Literal["approved", "published", "rejected", "failed"]
 ```
 
-`ResearchTask` (topic, guidance, one `RankedSource`) is the private input each `research_source` worker receives through `Send`; it is not part of `State`. Likewise `ApprovalDecision` (`action`, `feedback`) is the resume value the approval node reads; only its effects are written to `State`. `status` holds only end states, because a node can only write a value while it runs; queued, running and awaiting approval are worked out by the API (see below).
+`ResearchTask` (topic, guidance, one `RankedSource`) is the private input each `research_source` worker receives through `Send`; it is not part of `State`. Likewise `ApprovalDecision` (`action`, `feedback`) is the resume value the approval node reads; only its effects are written to `State`. `status` holds only values a node writes, because a node can only write a value while it runs; queued, running and awaiting approval are worked out by the API (see below). `approved` is set by the approval node and replaced by `published` one step later; it stays the final value only for runs that ended before the publisher existed.
 
 ## Project structure
 
@@ -97,9 +95,12 @@ AutomatedContentCreation/
 │   ├── explore.ipynb
 │   ├── search.ipynb / searcher.ipynb / ranker.ipynb / researcher.ipynb
 │   ├── approval.ipynb        # interrupt + resume: approve, request changes, reject
+│   ├── publisher.ipynb       # posts table prototype, publisher node, approve / reject / replay checks
 │   └── sample_search.json, sample_state.json
 ├── content_agent/
 │   ├── llm.py                # get_llm(role) / get_structured_llm(role, schema), per-role model via env
+│   ├── db.py                 # DATABASE_URL, get_pool() / close_pool(): the graph's own small pool
+│   ├── posts.py              # posts table: create, insert (safe to repeat), list, get
 │   ├── graph/
 │   │   ├── state.py          # State, SearchResult, RankedSource, Fact, ResearchTask, ApprovalDecision
 │   │   ├── prompts.py        # all LLM prompts
@@ -111,7 +112,7 @@ AutomatedContentCreation/
 │   │       ├── writer.py     # draft + citation renumbering, revision prompt
 │   │       ├── critic.py     # support + length check, routes to writer / approval / END
 │   │       ├── approval.py   # human-in-the-loop interrupt, routes with Command
-│   │       └── publisher.py  # (planned)
+│   │       └── publisher.py  # stores the approved draft as a post, status="published"
 │   ├── tools/
 │   │   ├── search.py         # Tavily wrapper
 │   │   └── fetch.py          # httpx + trafilatura page text extraction
@@ -163,8 +164,10 @@ streamlit run ui/app.py                                       # UI (API_URL defa
 | POST | `/runs` | Start a run with `{topic, guidance}`; the graph runs in the background | 201, 422 |
 | GET | `/runs/{id}` | Status, draft, references, sources, feedback; `review` while awaiting approval | 200, 404, 422 |
 | POST | `/runs/{id}/resume` | `{action, feedback}`: `approve` / `request_changes` (feedback required) / `reject` | 202, 404, 409 (busy or not awaiting approval), 422 |
+| GET | `/posts` | Published posts, newest first; `limit` (1-100, default 20), `offset` (default 0) | 200, 422 |
+| GET | `/posts/{id}` | The post a run published (`id` is the run ID) | 200, 404 (unknown or not published), 422 |
 
-The run ID is the graph's `thread_id`. Startup (FastAPI `lifespan`) opens one psycopg `ConnectionPool` (`autocommit`, `dict_row`, `prepare_threshold=0`, as `PostgresSaver` requires), runs `checkpointer.setup()`, creates the `runs` table and builds the graph once. Runs execute on a dedicated `ThreadPoolExecutor` (4 at a time; extra runs wait in its queue), so long LLM calls never hold the threads that serve requests.
+The run ID is the graph's `thread_id`. Startup (FastAPI `lifespan`) opens one psycopg `ConnectionPool` (`autocommit`, `dict_row`, `prepare_threshold=0`, as `PostgresSaver` requires), runs `checkpointer.setup()`, creates the `runs` and `posts` tables and builds the graph once. The publisher node uses its own small pool from `db.get_pool()`, which shutdown closes. Both pools check each connection before lending it (`check=ConnectionPool.check_connection`), so a Postgres restart doesn't fail the next requests. Runs execute on a dedicated `ThreadPoolExecutor` (4 at a time; extra runs wait in its queue), so long LLM calls never hold the threads that serve requests.
 
 **Status is never stored**; `GET` works it out on every call, in this order:
 
@@ -175,7 +178,7 @@ The run ID is the graph's `thread_id`. Startup (FastAPI `lifespan`) opens one ps
 | no checkpoint yet | `queued` |
 | the checkpoint has a pending interrupt | `awaiting_approval` |
 | the checkpoint has a next node | `running` |
-| finished: `State.status` | `approved` / `rejected` / `failed` |
+| finished: `State.status` | `published` / `rejected` / `failed` (`approved` only for runs from before the publisher) |
 | finished without an end state (e.g. no sources) | `failed` |
 
 ### Known limitations
@@ -198,6 +201,7 @@ The run ID is the graph's `thread_id`. Startup (FastAPI `lifespan`) opens one ps
 - [x] Human approval interrupt (approve / request changes / reject), tested with `InMemorySaver`
 - [x] Postgres checkpointer (paused runs survive a server restart)
 - [x] FastAPI endpoints wired to the graph: `POST /runs`, `GET /runs/{id}`, `POST /runs/{id}/resume`
+- [x] Publisher: approved drafts stored in the `posts` table (safe to repeat), `GET /posts`, `GET /posts/{id}`
 - [ ] Resume runs interrupted by a restart, at startup
 - [ ] Minimal UI: topic input (done), live run view, approval screen
 - [ ] Deploy

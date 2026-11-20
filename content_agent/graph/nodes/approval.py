@@ -10,8 +10,11 @@ ACTIONS = ("approve", "request_changes", "reject")
 
 # ---------- What the human sees ----------
 
-def _critic_verdict(state: State) -> str:
-    """Why this draft reached the human: it passed, it was not reviewed, or the critic gave up."""
+def critic_verdict(state: State) -> str:
+    """Why this draft reached the human: it passed, it was not reviewed, or the critic gave up.
+
+    Public: the publisher stores this same verdict with the post.
+    """
     passed = state.get("critic_passed")
     if passed is True:
         return "passed"
@@ -22,7 +25,7 @@ def _critic_verdict(state: State) -> str:
 
 def _review_request(state: State) -> dict:
     """The interrupt payload. Plain JSON: it is saved in the checkpoint and sent by the API."""
-    verdict = _critic_verdict(state)
+    verdict = critic_verdict(state)
     notes = state.get("critic_notes", [])
     return {
         "draft": state["draft"],
@@ -57,7 +60,7 @@ def _validation_error(decision: object) -> str | None:
 
 # ---------- Node ----------
 
-def approval(state: State) -> Command[Literal["writer", "__end__"]]:
+def approval(state: State) -> Command[Literal["writer", "publisher", "__end__"]]:
     """Graph node: pause for a human decision, then route on it.
 
     On resume, LangGraph runs this node again from the top and each interrupt()
@@ -77,7 +80,7 @@ def approval(state: State) -> Command[Literal["writer", "__end__"]]:
     print(f"Approval: {action}" + (f" ({feedback})" if feedback else ""))
 
     if action == "approve":
-        return Command(update={"status": "approved"}, goto=END)
+        return Command(update={"status": "approved"}, goto="publisher")
     if action == "reject":
         return Command(update={"status": "rejected", "human_feedback": feedback}, goto=END)
 

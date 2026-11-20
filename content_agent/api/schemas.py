@@ -10,7 +10,8 @@ class RunStatus(str, Enum):
     QUEUED = "queued"                        # row created, no checkpoint yet
     RUNNING = "running"                      # graph is between steps
     AWAITING_APPROVAL = "awaiting_approval"  # paused at the approval interrupt
-    APPROVED = "approved"
+    APPROVED = "approved"                    # only runs that ended before the publisher existed
+    PUBLISHED = "published"                  # approved and stored as a post
     REJECTED = "rejected"
     FAILED = "failed"                        # no draft, no sources, or the run crashed
 
@@ -55,6 +56,17 @@ class ReviewOut(BaseModel):
     critic_note: str | None
     revision_count: int
     error: str | None
+
+
+class PostOut(BaseModel):
+    """A published post, as stored in the posts table."""
+    run_id: str
+    topic: str
+    draft: str                   # text with [n] citation markers
+    references: list[str]        # references[n-1] is the URL for [n]
+    critic_verdict: Literal["passed", "not_reviewed", "budget_exhausted"]
+    edited: bool                 # an editor requested changes before approving
+    published_at: datetime
 
 
 class RunResponse(BaseModel):

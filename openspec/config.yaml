@@ -4,7 +4,7 @@ context: |
   Solo project for learning LangGraph, also a portfolio piece that will be deployed.
   Finish the Phase 1 core flow (publisher, UI, deploy) before quality upgrades; defer those to a later phase.
   API is synchronous throughout and supports a single uvicorn worker only (in-process busy guard).
-  Git: work on a feature branch, fast-forward into main (linear history, no PRs); never push.
+  Git: work on a feature branch, fast-forward into main (linear history, no PRs); never push. After every task , commit changes to feature branch. Before fast-forward, merge all commits to one commit.
 
 rules:
   design:

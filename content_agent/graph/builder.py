@@ -2,6 +2,7 @@ from langgraph.graph import END, START, StateGraph
 
 from content_agent.graph.nodes.approval import approval
 from content_agent.graph.nodes.critic import critic, route_after_critic
+from content_agent.graph.nodes.publisher import publisher
 from content_agent.graph.nodes.ranker import ranker
 from content_agent.graph.nodes.researcher import fan_out_to_researchers, research_source
 from content_agent.graph.nodes.searcher import searcher
@@ -20,6 +21,7 @@ def build_graph(checkpointer=None):
     builder.add_node("writer", writer)
     builder.add_node("critic", critic)
     builder.add_node("approval", approval)   # routes itself with Command; no outgoing edges here
+    builder.add_node("publisher", publisher)
 
     # --- Edges ---
     builder.add_edge(START, "searcher")
@@ -28,5 +30,6 @@ def build_graph(checkpointer=None):
     builder.add_edge("research_source", "writer")
     builder.add_edge("writer", "critic")
     builder.add_conditional_edges("critic", route_after_critic, ["writer", "approval", END])
+    builder.add_edge("publisher", END)
 
     return builder.compile(checkpointer=checkpointer)

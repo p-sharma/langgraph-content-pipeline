@@ -7,7 +7,7 @@ from langgraph.types import StateSnapshot
 from content_agent.api.runs import RunRow
 from content_agent.api.schemas import RunResponse, RunStatus
 
-END_STATES = {"approved", "rejected", "failed"}   # the values State.status can hold
+END_STATES = {"approved", "published", "rejected", "failed"}   # the values State.status can hold
 
 
 def derive_status(row: RunRow, snapshot: StateSnapshot, active: bool) -> RunStatus:
