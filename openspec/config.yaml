@@ -1,0 +1,46 @@
+schema: spec-driven
+
+context: |
+  Solo project for learning LangGraph, also a portfolio piece that will be deployed.
+  Finish the Phase 1 core flow (publisher, UI, deploy) before quality upgrades; defer those to a later phase.
+  API is synchronous throughout and supports a single uvicorn worker only (in-process busy guard).
+  Git: work on a feature branch, fast-forward into main (linear history, no PRs); never push.
+
+rules:
+  design:
+    - List the alternatives considered and why each was rejected
+  tasks:
+    - New nodes or tools start with a prototype notebook in research/ before module code
+    - End with a manual end-to-end verification (notebook or live API run); no pytest tasks yet
+    - Last task updates README.md (graph diagram, State, API tables, Status checklist)
+
+# Project context (optional)
+# Add only constraints that should guide OpenSpec artifacts and workflows.
+# Include constraints an agent cannot infer by reading the code.
+# Keep general project documentation and discoverable codebase facts out.
+# Example:
+#   context: |
+#     Designs and tasks must cover Windows, macOS, and Linux
+#     Write all artifacts in Spanish
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always state what is out of scope
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing
