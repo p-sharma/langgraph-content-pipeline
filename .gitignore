@@ -4,3 +4,5 @@ agentic_development.code-workspace
 .vscode/*
 __pycache__/
 *.py[cod]
+.DS_Store
+.claude/settings.local.json
