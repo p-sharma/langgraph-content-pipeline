@@ -122,8 +122,12 @@ AutomatedContentCreation/
 │       ├── runs.py           # runs table: one row per run (no status column)
 │       ├── status.py         # status worked out from the runs row + graph checkpoint
 │       └── active.py         # run IDs with a graph.invoke in progress (busy guard)
-├── ui/
-│   └── app.py                # Streamlit UI: topic form, calls the API at $API_URL
+├── ui/                       # Streamlit operator UI; talks only to the API at $API_URL
+│   ├── app.py                # entry: st.navigation with the Run and Archive pages
+│   ├── api.py                # every HTTP call; failures raise ApiError
+│   ├── citations.py          # render_draft: [n] markers -> links to references[n-1]
+│   ├── run_page.py           # start form, ?run_id= URL, polling live view, review + decisions, end states
+│   └── archive_page.py       # published posts, 10 per page
 └── tests/                    # (planned)
 ```
 
@@ -134,7 +138,7 @@ AutomatedContentCreation/
 - **Tavily**: web search; **httpx + trafilatura**: page fetching and text extraction
 - **Postgres** + `langgraph-checkpoint-postgres`: durable graph state
 - **FastAPI + Uvicorn**: API
-- **Streamlit**: minimal UI
+- **Streamlit**: operator UI (`st.navigation` pages, `st.fragment` polling)
 - **LangSmith**: tracing / observability
 
 ## Setup (pip)
@@ -151,11 +155,11 @@ Create `.env` in the project root with `ANTHROPIC_API_KEY` and `TAVILY_API_KEY`.
 Run commands from the project root:
 
 ```bash
-uvicorn content_agent.api.main:app --env-file .env --reload   # API on :8000 (fails at startup if Postgres is down)
-streamlit run ui/app.py                                       # UI (API_URL defaults to http://localhost:8000)
+uvicorn content_agent.api.main:app --env-file .env --reload --reload-dir content_agent   # API on :8000 (fails at startup if Postgres is down)
+streamlit run ui/app.py                                                                # UI on :8501 (API_URL defaults to http://localhost:8000)
 ```
 
-`--reload` restarts the server on every file save, which stops runs that are in progress (see Known limitations).
+`--env-file .env` is required: the code does not load `.env` itself. `--reload` restarts the server on every file save, which stops runs that are in progress (see Known limitations); `--reload-dir content_agent` keeps saves under `ui/` from restarting it.
 
 ## API
 
@@ -186,6 +190,18 @@ The run ID is the graph's `thread_id`. Startup (FastAPI `lifespan`) opens one ps
 - **Single uvicorn worker only.** The busy guard that turns a double-clicked resume into a 409 is in-process memory.
 - **A restart in the middle of a run leaves it reporting `running`.** Its checkpoint still has a next node, but nothing is executing it. Runs paused at approval are not affected and resume normally. The fix is to resume these runs with `invoke(None)` at startup.
 
+## UI
+
+A two-page Streamlit app for a single operator (no auth), built only on the API above.
+
+- **Run** (`/`): the topic form starts a run. The current run's ID is kept in the URL (`/?run_id=<id>`), so a refresh, a bookmark or a Streamlit restart reopens it; it is also kept in the session, because switching pages drops the query string.
+  - While `queued` / `running`, an `st.fragment(run_every=3)` polls `GET /runs/{id}` and shows the status, a stage hint inferred from what exists so far (no sources: searching; sources but no draft: researching and drafting; a draft: reviewing and revising), the sources and the latest draft. When the status settles, the fragment calls `st.rerun()` and the full page takes a branch without a timer.
+  - At `awaiting_approval`: the draft with linked citations, references, critic verdict and note, revision count, sources, a feedback box, and Approve / Request changes (feedback required) / Reject. A decision is sent with `POST /resume`, and the page goes back to polling. A 409 shows as a warning.
+  - End states: `published` shows the stored post, `rejected` / `approved` say so, `failed` shows the error.
+- **Archive** (`/archive`): published posts, newest first, 10 per page with Prev / Next (it requests 11 to know if a next page exists).
+
+Streamlit shows a "Source file changed" banner after an edit; choose **Always rerun** while developing, or the page keeps running the old code.
+
 ## Status
 
 - [x] Project structure and dependencies
@@ -203,5 +219,6 @@ The run ID is the graph's `thread_id`. Startup (FastAPI `lifespan`) opens one ps
 - [x] FastAPI endpoints wired to the graph: `POST /runs`, `GET /runs/{id}`, `POST /runs/{id}/resume`
 - [x] Publisher: approved drafts stored in the `posts` table (safe to repeat), `GET /posts`, `GET /posts/{id}`
 - [ ] Resume runs interrupted by a restart, at startup
-- [ ] Minimal UI: topic input (done), live run view, approval screen
+- [x] UI: topic input, live run view, approval screen, archive page
+- [ ] UI: list of pending runs (today a paused run is reachable only through its `?run_id=` URL)
 - [ ] Deploy

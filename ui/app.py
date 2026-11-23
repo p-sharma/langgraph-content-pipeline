@@ -1,46 +1,17 @@
-import os
+"""Streamlit entry point: `streamlit run ui/app.py`. Holds only the page list.
 
-import httpx
+Streamlit puts this file's folder (ui/) on sys.path, so the page modules and
+their helpers (api, citations) import by plain name.
+"""
 import streamlit as st
 
-API_URL = os.getenv("API_URL", "http://localhost:8000")
+import archive_page
+import run_page
 
 st.set_page_config(page_title="Content Agent")
-st.title("Content Agent")
-st.caption("Enter a topic. Agents will research it and draft a short summary for your approval.")
 
-with st.form("new_run"):
-    topic = st.text_input("Topic", placeholder="e.g. Rust in the Linux kernel")
-    guidance = st.text_area(
-        "Guidance (optional)",
-        placeholder="e.g. Focus on security implications, for a developer audience",
-    )
-    submitted = st.form_submit_button("Start research")
-
-if submitted:
-    if len(topic.strip()) < 3:
-        st.error("Please enter a topic of at least 3 characters.")
-    else:
-        try:
-            resp = httpx.post(
-                f"{API_URL}/runs",
-                json={"topic": topic, "guidance": guidance or None},
-                timeout=10,
-            )
-            resp.raise_for_status()
-            st.session_state["run_id"] = resp.json()["run_id"]
-            st.success("Run started!")
-        except httpx.HTTPError as e:
-            st.error(f"Could not reach the backend: {e}")
-
-# --- Show the current run ---
-if "run_id" in st.session_state:
-    run_id = st.session_state["run_id"]
-    st.subheader("Current run")
-    try:
-        run = httpx.get(f"{API_URL}/runs/{run_id}", timeout=10).json()
-        st.write(f"**Topic:** {run['topic']}")
-        st.write(f"**Status:** `{run['status']}`")
-        st.caption(f"Run ID: {run_id}")
-    except httpx.HTTPError as e:
-        st.error(f"Could not load run: {e}")
+nav = st.navigation([
+    st.Page(run_page.render, title="Run", url_path="run", default=True),   # default: served at /
+    st.Page(archive_page.render, title="Archive", url_path="archive"),
+])
+nav.run()
